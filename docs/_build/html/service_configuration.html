@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Service Configuration &#8212; NGINXRAY  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to NGINXRAY’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="service-configuration">
+<h1>Service Configuration<a class="headerlink" href="#service-configuration" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="parse_config.Service">
+<em class="property">class </em><code class="sig-prename descclassname">parse_config.</code><code class="sig-name descname">Service</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#parse_config.Service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of a single SERVICE as represented in YAML.</p>
+<dl class="py class">
+<dt id="parse_config.Service.Route">
+<em class="property">class </em><code class="sig-name descname">Route</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">route_</span></em>, <em class="sig-param"><span class="n">method</span></em>, <em class="sig-param"><span class="n">status</span></em>, <em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#parse_config.Service.Route" title="Permalink to this definition">¶</a></dt>
+<dd><p>Each SERVICE has 1+ routes. A route has a name, route, method, status and 
+optional query params.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="parse_config.Service.generate_service">
+<code class="sig-name descname">generate_service</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#parse_config.Service.generate_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dynamically create a Flask app defining the service and its routes, exporting it
+to the given filepath.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="parse_config.Service.load_route">
+<code class="sig-name descname">load_route</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">route_config</span></em><span class="sig-paren">)</span><a class="headerlink" href="#parse_config.Service.load_route" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept well-formatted config dict and add the route to the service.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="parse_config.parse_input_config">
+<code class="sig-prename descclassname">parse_config.</code><code class="sig-name descname">parse_input_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#parse_config.parse_input_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens and parses well-formatted yaml as defined in the DOCS.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">NGINXRAY</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Service Configuration</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to NGINXRAY’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jordan Dashel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/service_configuration.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
