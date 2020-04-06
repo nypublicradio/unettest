@@ -1,0 +1,9 @@
+services:
+  publisher:
+    routes:
+      - name: prophet_xml_import
+        route: "/api/v1/playlists/prophet_xml_import/<stream>/"
+        method: "GET"
+        status: 200
+        params:
+          - xml_contents
