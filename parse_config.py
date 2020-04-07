@@ -2,6 +2,7 @@ import yaml
 import re
 import sys
 import os
+import shutil
 
 def parse_input_config():
     """
@@ -27,7 +28,15 @@ def generate_dockercompose(services):
             f.write(f'    ports:\n')
             f.write(f'      - "{service.exposed_port}:{service.exposed_port}"\n')
             f.write(f'    expose:\n')
-            f.write(f'      - {service.exposed_port}')
+            f.write(f'      - {service.exposed_port}\n')
+        f.write(f'  nginx_server:\n')
+        f.write(f'    build: ./nginx_server\n')
+        f.write(f'    ports:\n')
+        f.write(f'      - "4999:80"\n')
+        f.write(f'    expose:\n')
+        f.write(f'      - 4999\n')
+        f.write(f'    volumes:\n')
+        f.write(f'      - ./nginx_server/conf:/etc/nginx/conf.d\n')
 
 class Service:
     """
@@ -53,6 +62,13 @@ class Service:
     def __str__(self):
         return "Service " + self.name
 
+    def load_home_route(self):
+        """
+        Give a simple / response identifying the server.
+        """
+        r = self.Route("home", '/', 'GET', 200, None)
+        self.routes.append(r)
+
     def load_route(self, route_config):
         """
         Accept well-formatted config dict and add the route to the service.
@@ -77,13 +93,13 @@ class Service:
             f.write('from flask import Flask, request\n')
             f.write('app = Flask(__name__)\n')
             for r in self.routes:
-                route_vars = route_vars.findall(r.route_)
-                method_sig = ""
-                if route_vars:
-                    method_sig = ','.join(route_vars)
+                path_vars = route_vars.findall(r.route_)
+                method_vars = ""
+                if path_vars:
+                    method_vars = ','.join(path_vars) + ', '
                 f.write(f"""
 @app.route('{r.route_}')
-def {r.name}({method_sig}, methods=['{r.method}']):
+def {r.name}({method_vars}methods=['{r.method}']):
     return 'thanx', {r.status}
 
 """)
@@ -108,6 +124,7 @@ services = []
 exposed_port = 5000
 for service_name in config['services']:
     s = Service(service_name)
+    s.load_home_route()
     for route_ in config['services'][service_name]['routes']:
         s.load_route(route_)
     s.exposed_port = exposed_port
@@ -120,5 +137,16 @@ for service in services:
     service.generate_service(f'./{service.name}/main.py')
     service.insert_dockerfile(f'./{service.name}/Dockerfile', service.exposed_port)
     service.insert_requirements(f'./{service.name}/requirements.txt')
+
+if not os.path.exists('./nginx_server'):
+    os.mkdir('./nginx_server')
+if not os.path.exists('./nginx_server/conf'):
+    os.mkdir('./nginx_server/conf')
+os.system('rm ./nginx_server/conf/*')
+os.system('cp ./nginx/* ./nginx_server/conf')
+with open('./nginx_server/Dockerfile', 'w') as f:
+    f.write("""from openresty/openresty:buster-fat
+""")
+
 
 generate_dockercompose(services)
