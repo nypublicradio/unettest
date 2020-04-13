@@ -1,6 +1,26 @@
 import json
 import requests
 
+from collections import namedtuple
+
+def run_tests(tests, services):
+    test_reports = []
+    Report = namedtuple('Report', ['test_name', 'success'])
+    for test, conf in tests:
+        print("testing", test)
+        success = run_test(conf, services)
+        test_reports.append(Report(test, success))
+    return test_reports
+
+
+def analyze_test_results(test_reports):
+    failures = list(filter((lambda report: not report.success), test_reports))
+
+    for fail in failures:
+        print("FAIL ", fail.test_name)
+    return failures
+
+
 def run_test(test, services):
     successes = []
 

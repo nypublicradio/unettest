@@ -1,24 +1,24 @@
 services:
-  publisher:
-    routes:
-      - name: prophet_xml_import
-        route: "/api/v1/playlists/prophet_xml_import/<stream>/"
-        method: "GET"
-        status: 200
-        params:
-          - xml_contents
+  - publisher:
+      routes:
+        - name: prophet_xml_import
+          route: "/api/v1/playlists/prophet_xml_import/<stream>/"
+          method: "GET"
+          status: 200
+          params:
+            - xml_contents
 
 tests:
-  test_prophet_import:
-    send: "GET"
-    target: '/api/v1/playlists/prophet_xml_import/wqxr/'
-    vars:
-      stream: wqxr
-    expect: 
-      publisher.prophet_xml_import:
-        called_times: 1
-        method: "GET"
-        return_status: 200
-        called_with: 
-          params: 
-            stream: wqxr
+  - test_prophet_import:
+      send: "GET"
+      target: '/api/v1/playlists/prophet_xml_import/wqxr/'
+      vars:
+        stream: wqxr
+      expect: 
+        publisher.prophet_xml_import:
+          called_times: 1
+          method: "GET"
+          return_status: 200
+          called_with: 
+            params: 
+              stream: wqxr

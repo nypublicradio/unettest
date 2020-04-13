@@ -4,7 +4,7 @@ import time
 import argparse
 
 import config_tools
-import tests
+import test
 
 from service import Service
 from docker import generate_dockercompose
@@ -38,8 +38,8 @@ Running interactive mode.
             #     all_up = [False]
             #     pass
             # all_up = all(up)
-        test_results = tests.run_tests(tests, services)
-        failures = tests.analyze_test_results(test_results)
+        test_results = test.run_tests(tests, services)
+        failures = test.analyze_test_results(test_results)
         assert len(failures) == 0
         config_tools.tear_down_local_network()
         print("Success!! No failures")
