@@ -9,48 +9,44 @@ Welcome to NGINXRAY's documentation!
 .. toctree::
    :maxdepth: 2
 
-Service Fake Configuration
---------------------------
+Service Doubles Configuration
+-----------------------------
 
-You can define a suite of fake services that will accept traffic and act like they do in
-the real world, minus the actual internal operations. They accept requests and behave as
-expected. Here is an example of a configuration:
+You can define a suite of fake services that will accept traffic and act like
+they do in the real world, minus the actual internal operations. They accept
+requests and behave as expected. Here is an example of a configuration:
 
-.. code-block:: yaml
+.. literalinclude:: ../pub_config.yml
+   :language: yaml
 
-   services:
-     publisher:
-       routes:
-         - name: prophet_xml_import
-           route: "/api/v1/playlists/prophet_xml_import/<stream>/"
-           method: "GET"
-           params:
-             - xml_contents
-         - name: david_xml_import
-           route: "/api/v1/playlists/david_xml_import/<stream>/"
-           method: "POST"
-           params:
-             - password
-     whatson:
-       routes:
-         - name: whats_on_prophet
-           route: "/whats-on/v1/update"
-           method: "GET"
-           params:
-             - xml_contents
-             - stream
-         - route: "/whats-on/v1/update"
-           method: "POST"
-           params:
-             - stream
 
-This configuration defines two services, `publisher` and `whatson`, that each have two
-routes.
+This configuration defines a list of services, containing `publisher` and one
+of its routes. You can provide a list of services and a list of routes, even
+though there is only one here currently.
 
-NGINXRAY reads in this configuration and dynamically configures services to be run locally
-and that will behave as configured above.
+NGINXRAY reads in this configuration and dynamically configures services to be
+run locally which will behave as configured above.
 
 .. toctree::
    
-   service_configuration
+   internal_components
 
+NGINXRAY can be invoked as follows
+----------------------------------
+.. NOTE::
+  There is currently not a great build/distribution system so you will have to
+  clone the repo, make a virtual env, and install requirements. 
+
+
+::
+
+  $ python nginxray.py config.yml
+
+
+You can pass in any config you like. You can specify nginx.conf files from
+where ever you like.::
+
+   $ python nginxray.py config.yml --nginx-conf ~/my/nginx/conf
+
+The `--nginx-conf` option takes a directory and configures the nginx routing
+using whatever is inside.
