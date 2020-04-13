@@ -3,3 +3,4 @@ publisher/
 docker-compose.yml
 nginx_server/
 nginx/
+docs/build

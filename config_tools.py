@@ -2,6 +2,7 @@ import yaml
 import os
 
 from service import Service
+WORK_DIR='.'
 
 def configure_services(configuration):
     services = {}
@@ -52,31 +53,36 @@ def parse_input_config(config):
         except yaml.YAMLError as e:
             print(e)
 
+def mk_workspace_ondisk():
+    if not os.path.exists(WORK_DIR):
+        os.mkdir(WORK_DIR)
+
 
 def configure_service_ondisk(service_name, service):
     """
     Configure local directory to later build into SERVICE docker image.
     
-    MAKES DIR ./service
+    MAKES DIR service
     """
-    if not os.path.exists(f'./{service_name}'):
-        os.mkdir(f'./{service_name}')
-    service.generate_service(f'./{service_name}/main.py')
-    service.insert_dockerfile(f'./{service_name}/Dockerfile', service.exposed_port)
-    service.insert_requirements(f'./{service_name}/requirements.txt')
+    if not os.path.exists(f'{WORK_DIR}/{service_name}'):
+        os.mkdir(f'{WORK_DIR}/{service_name}')
+    service.generate_service(f'{WORK_DIR}/{service_name}/main.py')
+    service.insert_dockerfile(f'{WORK_DIR}/{service_name}/Dockerfile', service.exposed_port)
+    service.insert_requirements(f'{WORK_DIR}/{service_name}/requirements.txt')
 
 
-def configure_nginx_ondisk():
+def configure_nginx_ondisk(input_nginxconf='./nginx/'):
     """
     Configure local directory to later build into NGINX docker image.
 
-    MAKES DIR ./nginx_server
+    MAKES DIR nginx_server
     """
-    if not os.path.exists('./nginx_server'):
-        os.mkdir('./nginx_server')
-    if not os.path.exists('./nginx_server/conf'):
-        os.mkdir('./nginx_server/conf')
-    os.system('rm ./nginx_server/conf/*')
-    os.system('cp ./nginx/* ./nginx_server/conf')
-    with open('./nginx_server/Dockerfile', 'w') as f:
+    if not os.path.exists(f'{WORK_DIR}/nginx_server'):
+        os.mkdir(f'{WORK_DIR}/nginx_server')
+    if not os.path.exists(f'{WORK_DIR}/nginx_server/conf'):
+        os.mkdir(f'{WORK_DIR}/nginx_server/conf')
+    os.system(f'rm {WORK_DIR}/nginx_server/conf/*')
+    input_nginxconf = input_nginxconf.rstrip('/')
+    os.system(f'cp {input_nginxconf}/* {WORK_DIR}/nginx_server/conf')
+    with open(f'{WORK_DIR}/nginx_server/Dockerfile', 'w') as f:
         f.write("""from openresty/openresty:buster-fat""")

@@ -55,18 +55,26 @@ Running interactive mode.
 
 
 
-parser = argparse.ArgumentParser(description='NGINX test harness')
-parser.add_argument('config', help='NGINXRAY yaml config', type=str)
+parser = argparse.ArgumentParser(description='NGINX test harness', 
+        formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=35))
+parser.add_argument('config', help='nginxray yaml config', type=str)
 parser.add_argument('-t', '--run-tests', help='run the tests', action='store_true')
+parser.add_argument('--nginx-conf', help='dir with nginx confs (default: ./nginx/)')
 args = parser.parse_args()
 
 
 config = config_tools.parse_input_config(args.config)
 tests = config['tests']
 services = config_tools.configure_services(config['services'])
+
+config_tools.mk_workspace_ondisk()
 for service_name, service in services.items():
     config_tools.configure_service_ondisk(service_name, service)
-config_tools.configure_nginx_ondisk()
+if args.nginx_conf:
+    config_tools.configure_nginx_ondisk(args.nginx_conf)
+else:
+    config_tools.configure_nginx_ondisk()
+
 generate_dockercompose(services)
 
 
