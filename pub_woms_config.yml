@@ -1,0 +1,73 @@
+services:
+  - publisher:
+      routes:
+        - name: prophet_xml_import
+          route: "/api/v1/playlists/prophet_xml_import/<stream>/"
+          method: "GET"
+          status: 200
+          params:
+            - xml_contents
+        - name: david_xml_import
+          route: "/api/v1/playlists/david_xml_import/<stream>/"
+          method: "POST"
+          status: 200
+          params:
+            - password
+  - woms:
+      routes:
+        - name: nexgen
+          route: "/whats-on/v1/whats-on/"
+          method: "GET"
+          status: 200
+          params:
+            - stream
+
+tests:
+  - test_woms_prophet:
+      send: "GET"
+      target: '/whats-on/v1/whats-on/'
+      expect:
+        woms.nexgen:
+          called_times: 1
+          method: "GET"
+          return_status: 200
+
+  - test_prophet_import:
+      send: "GET"
+      target: '/api/v1/playlists/prophet_xml_import/wqxr/'
+      vars:
+        stream: wqxr
+      expect: 
+        publisher.prophet_xml_import:
+          called_times: 1
+          method: "GET"
+          return_status: 200
+          called_with: 
+            params: 
+              stream: wqxr
+
+  - test_david_import:
+      send: "POST"
+      target: '/api/v1/playlists/david_xml_import/wqxr/'
+      vars:
+        stream: wqxr
+      body: |
+            <?xml version="1.0" encoding="UTF-8"?>
+            <wddxPacket version="1.0">
+              <item sequence="present">
+              </item>
+            </wddxPacket>
+      expect:
+        publisher.david_xml_import:
+          called_times: 1
+          method: "POST"
+          return_status: 200
+          called_with:
+            params:
+              stream: wqxr
+              body: |
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <wddxPacket version="1.0">
+                      <item sequence="present">
+                      </item>
+                    </wddxPacket>
