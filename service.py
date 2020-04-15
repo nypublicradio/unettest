@@ -67,13 +67,15 @@ def last_call():
                 path_vars = route_vars.findall(r.route_)
                 method_vars = ""
                 if path_vars:
-                    method_vars = ','.join(path_vars) + ', '
+                    method_vars = ','.join(path_vars)
                 f.write(f"""
-@app.route('{r.route_}')
-def {r.name}({method_vars}methods=['{r.method}']):
+@app.route('{r.route_}', methods=['{r.method}'])
+def {r.name}({method_vars}):
     func_name = inspect.currentframe().f_code.co_name
-    last_requests.append({{"test": func_name, "route": "{r.route_}", "time": time.time()}})
-    return 'thanx', {r.status}
+    last_requests.append({{"test": func_name, "route": "{r.route_}",
+        "status_code": {r.status}, "method": "{r.method}",
+        "params": request.args, "time": time.time()}})
+    return str({r.params})
 
 """)
 

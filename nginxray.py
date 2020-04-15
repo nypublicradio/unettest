@@ -30,14 +30,13 @@ Running interactive mode.
         # wait for systems to come up
         time.sleep(3)
         # TODO HOW TO DO BELOW WITHOUT REMOTE DISCONNECT ERR??
-        # all_up, up = False, []
-        # while not all_up:
+        # up = [False]
+        # while not all(up):
             # try:
             #     up = [requests.get(f'http://localhost:{s.exposed_port}/').status_code == 200 for s in services.values()]
             # except http.client.RemoteDisconnected:
-            #     all_up = [False]
+            #     up = [False]
             #     pass
-            # all_up = all(up)
         test_results = test.run_tests(tests, services)
         failures = test.analyze_test_results(test_results)
         assert len(failures) == 0
@@ -59,6 +58,7 @@ parser = argparse.ArgumentParser(description='NGINX test harness',
         formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=35))
 parser.add_argument('config', help='nginxray yaml config', type=str)
 parser.add_argument('-t', '--run-tests', help='run the tests', action='store_true')
+parser.add_argument('-s', '--spin-up', help='spin up servers and wait', action='store_true')
 parser.add_argument('--nginx-conf', help='dir with nginx confs (default: ./nginx/)')
 args = parser.parse_args()
 
@@ -67,7 +67,7 @@ config = config_tools.parse_input_config(args.config)
 tests = config['tests']
 services = config_tools.configure_services(config['services'])
 
-config_tools.mk_workspace_ondisk()
+# config_tools.mk_workspace_ondisk()
 for service_name, service in services.items():
     config_tools.configure_service_ondisk(service_name, service)
 if args.nginx_conf:
@@ -78,6 +78,11 @@ else:
 generate_dockercompose(services)
 
 
-what_to_do = RUN_TESTS if args.run_tests else None
+what_to_do = None
+
+if args.run_tests:
+    what_to_do = RUN_TESTS
+elif args.spin_up:
+    what_to_do = START_N_WAIT
 
 choose_behavior(services, tests, what_to_do)
