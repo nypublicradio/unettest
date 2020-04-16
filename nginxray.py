@@ -30,19 +30,13 @@ Running interactive mode.
     if what_to_do.lower() == RUN_TESTS:
         config_tools.mk_architecture_ondisk(services, nginx_conf_dir=args.nginx_conf)
         config_tools.spin_up_local_network()
-        # wait for systems to come up
-        time.sleep(3)
-        # TODO HOW TO DO BELOW WITHOUT REMOTE DISCONNECT ERR??
-        # up = [False]
-        # while not all(up):
-            # try:
-            #     up = [requests.get(f'http://localhost:{s.exposed_port}/').status_code == 200 for s in services.values()]
-            # except http.client.RemoteDisconnected:
-            #     up = [False]
-            #     pass
+
+        wait_until_up(services)
+
         test_results = test.run_tests(tests, services)
         failures = test.analyze_test_results(test_results)
         assert len(failures) == 0
+
         config_tools.tear_down_local_network()
         print("Success!! No failures")
 
@@ -65,6 +59,14 @@ Running interactive mode.
     else:
         choose_behavior(services, tests, input('\nplease give a useful selection\n'))
 
+
+def wait_until_up(services):
+    up = [False]
+    while not all(up):
+        try:
+            up = [requests.get(f'http://localhost:{s.exposed_port}/').status_code == 200 for s in services.values()]
+        except requests.exceptions.ConnectionError:
+            up = [False]
 
 
 parser = argparse.ArgumentParser(description='NGINX test harness', 
