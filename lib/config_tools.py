@@ -2,9 +2,10 @@ import yaml
 import os
 
 from lib.service import Service
+from lib.test_case import TestCase
 WORK_DIR='./nxr_apps'
 
-def configure_services(configuration):
+def parse_services(configuration):
     services = {}
     exposed_port = 5000
 
@@ -18,6 +19,11 @@ def configure_services(configuration):
         services[name] = service
     return services
 
+def parse_tests(configuration):
+    tests = []
+    for test_name, conf in configuration:
+        tests.append(TestCase(test_name, conf))
+    return tests
 
 def tear_down_local_network():
     os.system('docker-compose down')

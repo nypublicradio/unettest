@@ -78,8 +78,8 @@ args = parser.parse_args()
 
 
 config = config_tools.parse_input_config(args.config)
-tests = config['tests']
-services = config_tools.configure_services(config['services'])
+tests = config_tools.parse_tests(config['tests'])
+services = config_tools.parse_services(config['services'])
 
 what_to_do = None
 
