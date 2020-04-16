@@ -2,7 +2,7 @@ import yaml
 import os
 
 from service import Service
-WORK_DIR='.'
+WORK_DIR='./nxr_apps'
 
 def configure_services(configuration):
     services = {}
@@ -86,3 +86,44 @@ def configure_nginx_ondisk(input_nginxconf='./nginx/'):
     os.system(f'cp {input_nginxconf}/* {WORK_DIR}/nginx_server/conf')
     with open(f'{WORK_DIR}/nginx_server/Dockerfile', 'w') as f:
         f.write("""from openresty/openresty:buster-fat""")
+
+
+def generate_dockercompose(services):
+    """
+    Accept list of services and generate a docker-compose file.
+    """
+    with open(f'docker-compose.yml', 'w') as f:
+        f.write("version: '3'\n")
+        f.write("services:\n")
+        for name, service in services.items():
+            f.write(f'  {name}:\n')
+            f.write(f'    build: {WORK_DIR}/{name}\n')
+            f.write(f'    ports:\n')
+            f.write(f'      - "{service.exposed_port}:{service.exposed_port}"\n')
+            f.write(f'    expose:\n')
+            f.write(f'      - {service.exposed_port}\n')
+        f.write(f'  nginx_server:\n')
+        f.write(f'    build: {WORK_DIR}/nginx_server\n')
+        f.write(f'    ports:\n')
+        f.write(f'      - "4999:80"\n')
+        f.write(f'    expose:\n')
+        f.write(f'      - 4999\n')
+        f.write(f'    volumes:\n')
+        f.write(f'      - {WORK_DIR}/nginx_server/conf:/etc/nginx/conf.d\n')
+
+
+def mk_architecture_ondisk(services, nginx_conf_dir=None):
+    """
+    Catch-all env-creator. Run to set up everything.
+    """
+
+    mk_workspace_ondisk()
+
+    for service_name, service in services.items():
+        configure_service_ondisk(service_name, service)
+    if nginx_conf_dir:
+        configure_nginx_ondisk(nginx_conf_dir)
+    else:
+        configure_nginx_ondisk()
+
+    generate_dockercompose(services)

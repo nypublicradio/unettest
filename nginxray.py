@@ -1,16 +1,17 @@
 import os
+import sys
 import time
-# import requests
+import requests
 import argparse
 
 import config_tools
 import test
 
 from service import Service
-from docker import generate_dockercompose
 
 RUN_TESTS = 'r'
 START_N_WAIT = 's'
+TEST_ONLY = 't'
 QUIT = 'q'
 
 def choose_behavior(services, tests, what_to_do=None):
@@ -21,11 +22,13 @@ Running interactive mode.
 
         ({RUN_TESTS})un tests
         ({START_N_WAIT})pin up servers and let them run
+        ({TEST_ONLY})est without starting servers (async mode)
         ({QUIT})uit
 
 """) if what_to_do is None else what_to_do
 
     if what_to_do.lower() == RUN_TESTS:
+        config_tools.mk_architecture_ondisk(services, nginx_conf_dir=args.nginx_conf)
         config_tools.spin_up_local_network()
         # wait for systems to come up
         time.sleep(3)
@@ -44,7 +47,17 @@ Running interactive mode.
         print("Success!! No failures")
 
     elif what_to_do.lower() == START_N_WAIT:
+        config_tools.mk_architecture_ondisk(services, nginx_conf_dir=args.nginx_conf)
         config_tools.spin_up_local_network(detach=False)
+
+    elif what_to_do.lower() == TEST_ONLY:
+        try:
+            test_results = test.run_tests(tests, services)
+            failures = test.analyze_test_results(test_results)
+            assert len(failures) == 0
+            print("Success!! No failures")
+        except requests.exceptions.ConnectionError:
+            sys.exit("ERROR:Cannot connect to services. Make sure they are running in a separate process.")
 
     elif what_to_do.lower() == QUIT:
         quit()
@@ -57,8 +70,9 @@ Running interactive mode.
 parser = argparse.ArgumentParser(description='NGINX test harness', 
         formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=35))
 parser.add_argument('config', help='nginxray yaml config', type=str)
-parser.add_argument('-t', '--run-tests', help='run the tests', action='store_true')
+parser.add_argument('-r', '--run-tests', help='start nginxray and run tests', action='store_true')
 parser.add_argument('-s', '--spin-up', help='spin up servers and wait', action='store_true')
+parser.add_argument('-t', '--test-only', help='run tests async', action='store_true')
 parser.add_argument('--nginx-conf', help='dir with nginx confs (default: ./nginx/)')
 args = parser.parse_args()
 
@@ -67,22 +81,13 @@ config = config_tools.parse_input_config(args.config)
 tests = config['tests']
 services = config_tools.configure_services(config['services'])
 
-# config_tools.mk_workspace_ondisk()
-for service_name, service in services.items():
-    config_tools.configure_service_ondisk(service_name, service)
-if args.nginx_conf:
-    config_tools.configure_nginx_ondisk(args.nginx_conf)
-else:
-    config_tools.configure_nginx_ondisk()
-
-generate_dockercompose(services)
-
-
 what_to_do = None
 
 if args.run_tests:
     what_to_do = RUN_TESTS
 elif args.spin_up:
     what_to_do = START_N_WAIT
+elif args.test_only:
+    what_to_do = TEST_ONLY
 
 choose_behavior(services, tests, what_to_do)

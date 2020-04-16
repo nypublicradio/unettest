@@ -1,6 +1,4 @@
-docs/_build/
-publisher/
 docker-compose.yml
-nginx_server/
 nginx/
+nxr_apps/
 docs/build
