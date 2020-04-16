@@ -1,7 +1,7 @@
 import yaml
 import os
 
-from service import Service
+from lib.service import Service
 WORK_DIR='./nxr_apps'
 
 def configure_services(configuration):
