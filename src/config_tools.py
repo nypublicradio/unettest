@@ -1,8 +1,8 @@
 import yaml
 import os
 
-from lib.service import Service
-from lib.test_case import TestCase
+from src.service import Service
+from src.test_case import TestCase
 WORK_DIR='./nxr_apps'
 
 def parse_services(configuration):

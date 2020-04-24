@@ -4,10 +4,10 @@ import time
 import requests
 import argparse
 
-import lib.config_tools as config_tools
-import lib.test as test
+import src.config_tools as config_tools
+import src.test as test
 
-from lib.service import Service
+from src.service import Service
 
 RUN_TESTS = 'r'
 START_N_WAIT = 's'
