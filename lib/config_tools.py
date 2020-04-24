@@ -87,9 +87,9 @@ def configure_nginx_ondisk(input_nginxconf='./nginx/'):
         os.mkdir(f'{WORK_DIR}/nginx_server')
     if not os.path.exists(f'{WORK_DIR}/nginx_server/conf'):
         os.mkdir(f'{WORK_DIR}/nginx_server/conf')
-    os.system(f'rm {WORK_DIR}/nginx_server/conf/*')
+    os.system(f'rm -rf {WORK_DIR}/nginx_server/conf/*')
     input_nginxconf = input_nginxconf.rstrip('/')
-    os.system(f'cp {input_nginxconf}/* {WORK_DIR}/nginx_server/conf')
+    os.system(f'cp -r {input_nginxconf}/* {WORK_DIR}/nginx_server/conf')
     with open(f'{WORK_DIR}/nginx_server/Dockerfile', 'w') as f:
         f.write("""from openresty/openresty:buster-fat""")
 
@@ -112,10 +112,14 @@ def generate_dockercompose(services):
         f.write(f'    build: {WORK_DIR}/nginx_server\n')
         f.write(f'    ports:\n')
         f.write(f'      - "4999:80"\n')
+        f.write(f'    environment:\n')
+        f.write(f'      - env=dev\n')
         f.write(f'    expose:\n')
         f.write(f'      - 4999\n')
         f.write(f'    volumes:\n')
-        f.write(f'      - {WORK_DIR}/nginx_server/conf:/etc/nginx/conf.d\n')
+        # f.write(f'      - {WORK_DIR}/nginx_server/conf:/etc/nginx/conf.d\n')
+        # f.write(f'      - ./scripts:/usr/local/openresty/scripts\n')
+        f.write(f'      - {WORK_DIR}/nginx_server/conf:/usr/local/openresty/nginx/conf\n')
 
 
 def mk_architecture_ondisk(services, nginx_conf_dir=None):
