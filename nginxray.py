@@ -38,6 +38,7 @@ Running interactive mode.
         try:
             assert len(failures) == 0
         except AssertionError:
+            config_tools.tear_down_local_network()
             sys.exit(f'Sorry pal, you have {len(failures)} failures')
 
         config_tools.tear_down_local_network()
