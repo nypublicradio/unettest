@@ -35,7 +35,10 @@ Running interactive mode.
 
         test_results = test.run_tests(tests, services)
         failures = test.analyze_test_results(test_results)
-        assert len(failures) == 0
+        try:
+            assert len(failures) == 0
+        except AssertionError:
+            sys.exit(f'Sorry pal, you have {len(failures)} failures')
 
         config_tools.tear_down_local_network()
         print("Success!! No failures")
