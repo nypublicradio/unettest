@@ -2,3 +2,6 @@ docker-compose.yml
 nginx/
 nxr_apps/
 docs/build
+build/
+dist/
+nginxray.spec
