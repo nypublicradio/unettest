@@ -36,6 +36,7 @@ def run_test(test, services):
     response = send_to_nginx(test.uri, test.req_method)
 
     sys_under_test = services.get(test.service)
+    route_ = [r for r in sys_under_test.routes if r.name == test.expect.route_].pop()
 
     last_req = requests.get(f'http://localhost:{sys_under_test.exposed_port}/last_call')
 
@@ -51,7 +52,7 @@ def run_test(test, services):
             target = target.replace(varvalue, f'<{varname}>')
 
     print(f'  asserting target route was called . . . ', end='')
-    target_called = report_from_service['route'] == target
+    target_called = report_from_service['route'] == route_.route_
     if target_called:
         print('\tYes')
         successes.append(True)
