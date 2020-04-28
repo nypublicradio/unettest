@@ -56,6 +56,8 @@ Running interactive mode.
             print("Success!! No failures")
         except requests.exceptions.ConnectionError:
             sys.exit("ERROR:Cannot connect to services. Make sure they are running in a separate process.")
+        except AssertionError:
+            sys.exit(f'Sorry pal, you have {len(failures)} failures')
 
     elif what_to_do.lower() == QUIT:
         quit()
