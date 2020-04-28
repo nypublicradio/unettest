@@ -2,12 +2,18 @@
  Internal Components
 =======================
 
-.. autoclass:: service.Service
+.. autoclass:: src.service.Service
    :members:
+   :undoc-members:
 
-.. automodule:: docker
+.. automodule:: src.config_tools
    :members:
+   :undoc-members:
 
-.. automodule:: test
+.. automodule:: src.test
+   :members:
+   :undoc-members:
+
+.. automodule:: src.test_case
    :members:
    :undoc-members:
