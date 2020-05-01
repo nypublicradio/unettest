@@ -129,6 +129,12 @@ def mk_architecture_ondisk(services, nginx_conf_dir=None):
 
     mk_workspace_ondisk()
 
+    if 'NGINXR_CONFIG' in os.environ:
+        print('USING NGINX CONFS set by env var NGINXR_CONFIG')
+        nginx_conf_dir = os.environ['NGINXR_CONFIG']
+
+    print(f'LOADING NGINX CONFS located at {nginx_conf_dir}')
+
     for service_name, service in services.items():
         configure_service_ondisk(service_name, service)
     if nginx_conf_dir:
