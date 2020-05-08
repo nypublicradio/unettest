@@ -1,7 +1,9 @@
-# NGINXRAY
+# `unettest`
 
-A test infrastructure for all your NGINX conf needs.
+if u got a network, u net test
 
-Check out the real [docs](https://nypr-docs.s3.us-east-2.amazonaws.com/nxr/build/index.html).
+`unettest` is a network mocker, repl, and test harness
 
-More to come.
+Check out the [docs](https://nypr-docs.s3.us-east-2.amazonaws.com/nxr/build/index.html).
+
+Open to feature requests and demos (email or slack jordan d).
