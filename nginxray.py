@@ -67,12 +67,13 @@ Running interactive mode.
 
 
 def wait_until_up(services):
-    up = [False]
-    while not all(up):
-        try:
-            up = [requests.get(f'http://localhost:{s.exposed_port}/').status_code == 200 for s in services.values()]
-        except requests.exceptions.ConnectionError:
-            up = [False]
+    time.sleep(3)
+    # up = [False]
+    # while not all(up):
+    #     try:
+    #         up = [requests.get(f'http://localhost:{s.exposed_port}/').status_code == 200 for s in services.values()]
+    #     except requests.exceptions.ConnectionError:
+    #         up = [False]
 
 
 parser = argparse.ArgumentParser(description='NGINX test harness', 
