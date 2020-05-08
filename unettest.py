@@ -76,10 +76,12 @@ def wait_until_up(services):
     #         up = [False]
 
 
-parser = argparse.ArgumentParser(description='NGINX test harness', 
+parser = argparse.ArgumentParser(usage='unettest [-hrst] [--nginx-conf NGINX_CONF] file', 
+        description='if u got a network, u net test - - - - - - - - v0.1.0', 
+        epilog='help, tutorials, documentation: available ~~ unettest.net',
         formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=35))
-parser.add_argument('config', help='nginxray yaml config', type=str)
-parser.add_argument('-r', '--run-tests', help='start nginxray and run tests', action='store_true')
+parser.add_argument('config', help='unettest yaml config', type=str)
+parser.add_argument('-r', '--run-tests', help='start unettest and run tests', action='store_true')
 parser.add_argument('-s', '--spin-up', help='spin up servers and wait', action='store_true')
 parser.add_argument('-t', '--test-only', help='run tests async', action='store_true')
 parser.add_argument('--nginx-conf', help='dir with nginx confs (default: ./nginx/)')
