@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'NGINXRAY'
+project = 'unettest'
 copyright = '2020, Jordan Dashel'
 author = 'Jordan Dashel'
 

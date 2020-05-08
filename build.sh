@@ -31,7 +31,7 @@ function build_and_deploy_docs {
 
 	sphinx-build -b html ./docs ./docs/build
 
-	aws s3 cp ./docs s3://nypr-docs/unettest/ --recursive --acl public-read
+	aws s3 cp ./docs/build s3://docs-unettest/ --recursive --acl public-read
 }
 
 case $1 in 
