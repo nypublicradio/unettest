@@ -1,0 +1,6 @@
+- use a default forward nginx config
+✓ respect $NGINX_CONFIG
+- support single file
+- rm the folder left behind by nxr
+✓ build.sh `docs-only` `app-only`
+- better error/reporting on loaded nginx confs
