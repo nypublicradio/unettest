@@ -130,7 +130,7 @@ the answer.
 And if I thought, hmm I wonder if a -> b with $request_uri works, when $1
 doesn't. And since b -> a fixes $1, does it break $request_uri?  Or does
 $request_uri work still? These questions are too numerous, too complicated, and
-too subtle to wait 15+ minutes between each time I ask.
+too subtle to wait 15+ minutes between each time I ask.[^1]
 
 ## Answers to Find
 
@@ -252,6 +252,18 @@ too heavy in my eyes. It didn't work well with my current CI setup. I don't
 want to replace my deployment infrastructure to run my lambda on localhost. But
 also it's annoying to write the specialist AWS infrastructure (hello, specific
 lambda request json--`statusCode`, `body`, `content`) just to run a lambda.
-`unettest` can jack up your Lambda or nginx configuration or anything else into
+`unettest` can jack up your Lambda or NGINX configuration or anything else into
 a test harness so you can easily get under the hood of your network on your
 laptop. u got a network? u net test.
+
+
+[^1] So... what's the verdict on that weird NGINX behavior? I isolated things
+in `unettest` and it looks to me that if you pass a `$1` to an internal mirror,
+it will not evaluate it. But `$request_uri` works from both the mirror and
+parent block. Always. `$1` cannot be accessed directly from the mirror as if it
+is in scope, `$request_uri` can be accessed as if it is in scope. You can pass
+a literal into `(.*)` in the location line--it will recieve that value and
+parse it into a local (mirror) `$1`. If you try to pass in `$1` from the parent
+block, it remains `$1` in the mirror, and so in the body of the mirror, the
+value of the variable `$1` is the string `"$1"`. I think. Like I said, I am
+still an NGINX beginner.
