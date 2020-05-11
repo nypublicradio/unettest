@@ -199,7 +199,7 @@ exposed on `localhost:4999`. If I invoke
 `localhost:4999/api/v1/important_update/mycrazyval`, I can see in my
 terminal--immediately--what services are called and with what. If I want to
 switch a -> b or b -> a, I can edit the NGINX files on my laptop, restart
-`unettest`, and immediately see what happens when I curl my little 'network'.
+`unettest`, and immediately see what happens when I curl my little "network".
 
 ## Tests
 
@@ -214,14 +214,14 @@ tests:
       vars:
         crazyval: urgent
       expect: 
-        microservice.place_to_mirror_to:
+        - microservice.place_to_mirror_to:
           called_times: 1
           method: "GET"
           return_status: 200
           called_with:
             params:
               - crazyval
-        monolith.mirror_me_please
+        - monolith.mirror_me_please
           called_times: 1
           method: "GET"
           return_status: 200
@@ -229,24 +229,29 @@ tests:
 
 This is a definition of a test that can be run against your network of mocks.
 
-As you can see, it'll run a curl of "/api/v1/important_update/urgent/" against
-the internal NGINX server you configured and then assert that the route defined
-in the `monolith` server block and `microservice` are called in the ways they
+As you can see, it will curl `"/api/v1/important_update/urgent/"` against the
+internal NGINX server you configured and then assert that the route defined in
+the `monolith` server block and `microservice` are called in the ways they
 should be called. This information is collected from the within the mocks
-themselves. So you know when you run this command, it has run in and out
-entirely of the NGINX scripts under test. If your mocks are correctly
-configured, you are guaranteed that your route works as you say it does. It is
-under test coverage now.
+themselves. So you know when you run this command, it has run in and out of the
+NGINX scripts under test entirely. If your mocks are correctly configured, you
+are guaranteed that your route works as you say it does. It is under test
+coverage now.
 
 ## Takeaway
+
+![mechanic](https://docs-unettest.s3.us-east-2.amazonaws.com/mechanic.jpg)
 
 `unettest` started as a tool for me to put my untested network rules under
 locally runnable tests. But I see a lot of ways `unettest` can help you develop
 confidently on your laptop and know how things will work in the strange twists
-and turns of the internet. You could easily write a lambda plugin (or ask me! I
-take feature requests1) to run your lambda on your laptop. Amazon has announced
-SAM Local, but everything I've read about it makes it too heavy. It didn't work
-well with my current CI setup. I don't want to replace my deployment
-infrastructure to run my lambda on localhost. But also it's annoying to write
-the specialist AWS infrastructure (hello, specific lambda request
-json--`statusCode`, `body`, `content`)
+and turns of the internet and production environments. You could easily write a
+lambda plugin (or ask me! I take feature requests!) to run your lambda on your
+laptop. Amazon has announced SAM Local, but what I've read about it makes it
+too heavy in my eyes. It didn't work well with my current CI setup. I don't
+want to replace my deployment infrastructure to run my lambda on localhost. But
+also it's annoying to write the specialist AWS infrastructure (hello, specific
+lambda request json--`statusCode`, `body`, `content`) just to run a lambda.
+`unettest` can jack up your Lambda or nginx configuration or anything into a
+test harness to get under the hood of your network on your laptop. u got a
+network? u net test.
