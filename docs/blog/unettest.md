@@ -97,7 +97,8 @@ files with that classic development strategy--guess and check.
 
 But as I guessed and checked, NGINX's behavior became stranger and stranger.
 
-First I will take a moment to note, my development process was not
+And so it wasn't exactly seven-and-a-half million years to guess and to see my
+answer, but it sure felt like it.  My development process was not
 user-friendly. There was a high cost to check each guess. I had to:
 
 + Commit a change
@@ -111,20 +112,20 @@ sometimes I would be searching old time frames, sometimes old tests would be
 mixed in with the current tests, I was flooded with unrelated logs. It was
 bad.
 
-Kludgy as this development cycle was, I was able to suss out WHAT the
-behavior was but WHY was proving to be more difficult.
+It was a bad way of asking questions. This development cycle was so kludgy , I
+was able to suss out WHAT the behavior was but not WHY. Not even WHAT EXACTLY.
 
-## Questions at Hand
+## Life, the Universe, and Everything
 
-The strange symptom was that my Microservice was getting requests that look
-like `$microservice/new/api/update?value=$1$is_args$args`. Ummm what? NGINX is
-supposed to uhh INTERPOLATE those money variables?? I should be getting
-`?value=mycrazyvalue` not `?value=$1`. And even stranger, i found that if I
-swapped the mirror, it worked.
+The strange symptom I observerd was that my Microservice was getting requests
+that look like `$microservice/new/api/update?value=$1$is_args$args`. Ummm what?
+NGINX is supposed to uhh INTERPOLATE those money variables?? I should be
+getting `?value=mycrazyvalue` not `?value=$1`. And even stranger, i found that
+if I swapped the mirror, it worked.
 
 That is, if I mirror a -> b, my values are not parsed. But if I mirrored b ->
 a, it would successfully parse the route. This is so weird. But if I wanted to
-verify that a -> b didn't work like that, it'd be a 15 wait to deploy and learn
+verify that a -> b worked or did not, it wouldd be a 15 wait to deploy and learn
 the answer. 
 
 And if I thought, hmm I wonder if a -> b with $request_uri works, when $1
@@ -132,35 +133,41 @@ doesn't. And since b -> a fixes $1, does it break $request_uri?  Or does
 $request_uri work still? These questions are too numerous, too complicated, and
 too subtle to wait 15+ minutes between each time I ask. [1]
 
+Why? Why is it behaving like this? Why? Why? Why? NGINX was not giving me easy
+answers. The answers I was getting were half-answers (mirrors go unlogged by
+default). And they were so hard to find. By the time I found an answer, I had
+forgotten my question ("umm was $1 used here or was it being redirected in this
+one?"). The differences were subtle, the moving pieces were many, and I was
+getting frustrated.
+
 ## Answers to Find
 
-How to answer these questions? How to answer them in a less painful
-way? I had a couple ideas. I could go directly into the NonProd NGINX
-server with my changes or I could make a dummy NGINX server in our
-network, but both of these were mucking up the environment too much
-for my taste. Additionally, this didn't answer the question of getting
-better logs of what actually happened.
+How to answer these questions? How to answer them in a less painful way? I had
+a couple ideas. I could go directly into the NonProd NGINX server with my
+changes or I could make a dummy NGINX server in our network, but both of these
+were mucking up the environment too much for my taste. Additionally, this
+didn't answer the question of getting better logs of what actually happened.
 
 Then I thought, why not install NGINX on my laptop and run the confs locally?
-Lol! As if! NGINX was not happy running on my silly little computer.  It 
-is server software and belongs on a server.
+Lol! As if! NGINX was not happy running on my silly little computer.  It is
+server software and belongs on a server.
 
-So then I thought that it would be smart to use Docker. Here is a winning idea!
-But if I load NGINX into Docker, how does it talk to my services? I was sick of
-trying to hook into real-world networks and real-world services. There were
-too many complications, side effects, and fragile bits. I wanted to isolate the
-hell out of the NGINX files. They wanted to squirm away. I was bent on
-pinning them down for a good interrogation.
+So then I thought to use Docker. Here is a winning idea! But if I load NGINX
+into Docker, how does it talk to my services? I was sick of trying to hook into
+real-world networks and real-world services. There were too many complications,
+side effects, and fragile bits. I wanted to isolate the hell out of the NGINX
+files. They wanted to squirm away. I was bent on pinning them down for a good
+interrogation.
 
 ![Interrogation](https://docs-unettest.s3.us-east-2.amazonaws.com/rick+dicker+interrogation.png)
 
-At this point I was only interested in the Monolith and the Microservice as
+At this point I am only interested in the Monolith and the Microservice as
 *interfaces*. I do not care what they do after they have been sent the correct
 request. I thought, why not mock them? The only thing that I care about
 Monolith is that it's called with `/api/v1/important_update/mycrazyval` and the
 only thing I care about Microservice is that it's called at the same time
-but with `/new/api/update?value=mycrazyval`. Let's make a mock or two! Mix
-yourself a mocktail.
+but with `/new/api/update?value=mycrazyval`. Let's make a mock or two. Mix
+yourself a mocktail!
 
 ``` yaml
 services:
