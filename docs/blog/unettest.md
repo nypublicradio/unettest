@@ -252,6 +252,6 @@ too heavy in my eyes. It didn't work well with my current CI setup. I don't
 want to replace my deployment infrastructure to run my lambda on localhost. But
 also it's annoying to write the specialist AWS infrastructure (hello, specific
 lambda request json--`statusCode`, `body`, `content`) just to run a lambda.
-`unettest` can jack up your Lambda or nginx configuration or anything into a
-test harness to get under the hood of your network on your laptop. u got a
-network? u net test.
+`unettest` can jack up your Lambda or nginx configuration or anything else into
+a test harness so you can easily get under the hood of your network on your
+laptop. u got a network? u net test.
