@@ -130,7 +130,7 @@ the answer.
 And if I thought, hmm I wonder if a -> b with $request_uri works, when $1
 doesn't. And since b -> a fixes $1, does it break $request_uri?  Or does
 $request_uri work still? These questions are too numerous, too complicated, and
-too subtle to wait 15+ minutes between each time I ask.[^1]
+too subtle to wait 15+ minutes between each time I ask. [1]
 
 ## Answers to Find
 
@@ -257,7 +257,7 @@ a test harness so you can easily get under the hood of your network on your
 laptop. u got a network? u net test.
 
 
-[^1] So... what's the verdict on that weird NGINX behavior? I isolated things
+[1] So... what's the verdict on that weird NGINX behavior? I isolated things
 in `unettest` and it looks to me that if you pass a `$1` to an internal mirror,
 it will not evaluate it. But `$request_uri` works from both the mirror and
 parent block. Always. `$1` cannot be accessed directly from the mirror as if it
