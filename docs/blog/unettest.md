@@ -149,7 +149,7 @@ So then I thought that it would be smart to use Docker. Here is a winning idea!
 But if I load NGINX into Docker, how does it talk to my services? I was sick of
 trying to hook into real-world networks and real-world services. There were
 too many complications, side effects, and fragile bits. I wanted to isolate the
-hell out of the NGINX files. They wanted to squirm away but I was bent on
+hell out of the NGINX files. They wanted to squirm away. I was bent on
 pinning them down for a good interrogation.
 
 ![Interrogation](https://docs-unettest.s3.us-east-2.amazonaws.com/rick+dicker+interrogation.png)
