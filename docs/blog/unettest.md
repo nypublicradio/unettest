@@ -6,7 +6,7 @@ When I write software, there are many ways to ask a question. I could go to
 Stack Overflow or a smarter coworker, but I usually like to ask my computer
 first. 
 
-But what do I do if my computer is making me wait [seven and a half million
+What do I do if my computer is making me wait [seven and a half million
 years](https://hitchhikers.fandom.com/wiki/Deep_Thought) to get an answer? 
 
 I would need to revisit the question of how to ask questions. If I want to know
