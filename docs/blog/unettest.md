@@ -30,7 +30,7 @@ case, I write a test case. And when my code turns red, I make it better.
 I was writing NGINX configurations some time ago. I was new to NGINX and trying
 to figure out how things work. Their documentation (lovely though it is) can be
 impenetrable. I was getting the picture by looking at existing configurations
-and mimicing what they do.  And given that this bouquet of CONF files was
+and mimicking what they do.  And given that this bouquet of CONF files was
 handling all of our network traffic, it was largely a look-don't-touch affair.
 If I had a question, I could not ask it of my computer easily. NGINX does not
 have support for unit tests, or rapid feedback of any kind. If I really really
