@@ -46,14 +46,14 @@ pretty. Let's get into it.
 
 ## The Monolith and the Microservice
 
-We have a monolith that does all sorts of things. We are excising one piece of
-it to turn into a microservice with the goal of eventually putting the whole
-monolith down.
+We have a Monolith that does all sorts of things. We are excising one piece of
+it to turn into a Microservice with the goal of eventually putting the whole
+Monolith down.
 
 We have a playout system (actually, two systems) used by our radio teams that
 sends us an update every few minutes. These requests come in through our NGINX
 server and are typically routed to the Monolith. For now and into the
-forseeable future, we want to support both the monolith and the microservice.
+forseeable future, we want to support both the Monolith and the Microservice.
 As a DevOps engineer on staff, I was asked to go write a rule in our NGINX
 configuration to mirror the requests--they should go to both the Microservice
 and the Monolith. This way, the Monolith would continue to work while the
@@ -114,26 +114,25 @@ bad.
 Kludgy as this development cycle was, I was able to suss out WHAT the
 behavior was but WHY was proving to be more difficult.
 
-~~ NOTE TO THE EDITOR: the questions below are still unanswered. I
-need to do the work to answer them before publication ~~
+## Questions at Hand
 
-The strange symptom was that my Microservice was getting requests that
-look like `$microservice/new/api/update?value=$1$is_args$args`. Ummm
-what? NGINX is supposed to uhh INTERPOLATE those money variables?? I
-should be getting `?value=mycrazyvalue` not `?value=$1`. And even
-stranger, i found that if I swapped the mirror, it worked.
+The strange symptom was that my Microservice was getting requests that look
+like `$microservice/new/api/update?value=$1$is_args$args`. Ummm what? NGINX is
+supposed to uhh INTERPOLATE those money variables?? I should be getting
+`?value=mycrazyvalue` not `?value=$1`. And even stranger, i found that if I
+swapped the mirror, it worked.
 
-That is, if I mirror a -> b, my values are not parsed. But if I
-mirrored b -> a, it would successfully parse the route. And this is so
-weird that if I wanted to verify that a -> b didn't work like
-that, it'd be a 15 wait to deploy. And if I thought, hmm I wonder if a
--> b with $request_uri works, when $1 doesn't. And since b -> a fixes
-$1, does it break $request_uri? Or does $request_uri work still? These
-questions are too numerous, too complicated, and too subtle to wait
-15+ minutes between each time I ask.
+That is, if I mirror a -> b, my values are not parsed. But if I mirrored b ->
+a, it would successfully parse the route. This is so weird. But if I wanted to
+verify that a -> b didn't work like that, it'd be a 15 wait to deploy and learn
+the answer. 
 
-~~ ok we're past the really unanswered stuff. I'll go back and write
-the (correct) details once I know them ~~
+And if I thought, hmm I wonder if a -> b with $request_uri works, when $1
+doesn't. And since b -> a fixes $1, does it break $request_uri?  Or does
+$request_uri work still? These questions are too numerous, too complicated, and
+too subtle to wait 15+ minutes between each time I ask.
+
+## Answers to Find
 
 How to answer these questions? How to answer them in a less painful
 way? I had a couple ideas. I could go directly into the NonProd NGINX
@@ -151,7 +150,7 @@ But if I load NGINX into Docker, how does it talk to my services? I was sick of
 trying to hook into real-world networks and real-world services. There were
 too many complications, side effects, and fragile bits. I wanted to isolate the
 hell out of the NGINX files. They wanted to squirm away but I was bent on
-pinning them down and giving them a good shakedown.
+pinning them down for a good interrogation.
 
 ![Interrogation](https://docs-unettest.s3.us-east-2.amazonaws.com/rick+dicker+interrogation.png)
 
