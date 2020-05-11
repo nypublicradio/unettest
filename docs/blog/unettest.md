@@ -156,7 +156,7 @@ pinning them down for a good interrogation.
 
 At this point I was only interested in the Monolith and the Microservice as
 *interfaces*. I do not care what they do after they have been sent the correct
-response. I thought, why not mock them? The only thing that I care about
+request. I thought, why not mock them? The only thing that I care about
 Monolith is that it's called with `/api/v1/important_update/mycrazyval` and the
 only thing I care about Microservice is that it's called at the same time
 but with `/new/api/update?value=mycrazyval`. Let's make a mock or two! Mix
