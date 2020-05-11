@@ -2,13 +2,16 @@
 
 ![What is the answer, O Deep Thought](https://docs-unettest.s3.us-east-2.amazonaws.com/o_deep_thought.png)
 
-When I write software, there are a lot of ways to ask a question. I could go to
-Stack Overflow or to a smarter coworker. But I usually like to ask my computer
-first. What can I do though if my computer is having me wait [seven and a half
-million years](https://hitchhikers.fandom.com/wiki/Deep_Thought) to get an
-answer? I would need to revisit the question of how to ask questions. If I want
-to know the Ultimate Answer to Life, the Universe, and Everything, I must ask a
-damn Ultimate Question. Otherwise I will end up with an answer like 42. 
+When I write software, there are many ways to ask a question. I could go to
+Stack Overflow or a smarter coworker, but I usually like to ask my computer
+first. 
+
+But what do I do if my computer is making me wait [seven and a half million
+years](https://hitchhikers.fandom.com/wiki/Deep_Thought) to get an answer? 
+
+I would need to revisit the question of how to ask questions. If I want to know
+the Ultimate Answer to Life, the Universe, and Everything, I must ask a damn
+Ultimate Question. Otherwise I will end up with an answer like 42. 
 
 42 is an interesting datapoint though, and it might be useful, but in order to
 figure out what's going on, I might also like to know the answer to Death, the
@@ -24,19 +27,18 @@ something should work, I write a test describing the behavior.  Then I run my
 test and write code to make the test work. Great stuff. If there is a corner
 case, I write a test case. And when my code turns red, I make it better.
 
+I was writing NGINX configurations some time ago. I was new to NGINX and trying
+to figure out how things work. Their documentation (lovely though it is) can be
+impenetrable. I was getting the picture by looking at existing configurations
+and mimicing what they do.  And given that this bouquet of CONF files was
+handling all of our network traffic, it was largely a look-don't-touch affair.
+If I had a question, I could not ask it of my computer easily. NGINX does not
+have support for unit tests, or rapid feedback of any kind. If I really really
+wanted to know the answer to a question, I'd have to deploy that question to
+NonProd and wave around my dowsing rod to try and sense if things are both
+working and not broken. High cost, low reliablity.
 
-I was writing some NGINX configurations some time ago. I was new to NGINX and
-trying to figure out how things work. Their documentation (lovely though it is)
-can be inpenetrable. I was getting the picture largely by looking at existing
-configurations. And given that this set of CONF files was handling all of our
-network traffic, it was largely a look-don't-touch affair. If I had a question,
-I could not ask it of my computer easily. NGINX does not have support for unit
-tests, or rapid feedback support of any kind. If I really really wanted to know
-the answer to a question, I'd have to deploy that question to NonProd and wave
-around my dowsing rod and try to sense if things are both working and not
-broken. The cost was high and the reliability was low.
-
-This is silly in the best of times, but workable with no reason to fix what
+This is silly in the best of times, but workable--no reason to fix what
 ain't broke. Until I started scratching around the corners of an edge case...
 The only way I was able to figure out what on Earth was going on, I wanted to
 walk through all the different potential logic paths, and ugh, that was not
