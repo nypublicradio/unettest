@@ -189,14 +189,13 @@ services:
             - crazyval
 ```
 
-This is a yaml config following a standard I have created for
-`unettest`. It tells `unettest` what the network looks like: what
-services are on it and what their interfaces look like. Now I can work
-against them. I do not care that Monolith also does 10 million other
-things. I do not have to support its dependencies. It could be a black
-box that I have no control over. It could be a service that is only
-available in Production (!!) and can not be engineered against in
-NonProd.
+This is a yaml config following a standard I have created for `unettest`. It
+tells `unettest` what the network looks like: what services are on it and what
+their interfaces look like. Now I can work against them. I do not care that
+Monolith also does 10 million other things. I do not have to support its
+dependencies. It could be a black box that I have no control over. It could be
+a service that is only available in Production (!!) and cannot be engineered
+against in NonProd.
 
 Under the hood, `unettest` will parse this valid and complete configuration
 file and create two little local webapps conforming to the standard. Their
@@ -228,7 +227,7 @@ tests:
           called_with:
             params:
               - crazyval
-        - monolith.mirror_me_please
+        - monolith.mirror_me_please:
           called_times: 1
           method: "GET"
           return_status: 200
