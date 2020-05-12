@@ -3,7 +3,7 @@ import os
 
 from src.service import Service
 from src.test_case import TestCase
-WORK_DIR='./nxr_apps'
+WORK_DIR='./unitest_apps'
 
 def parse_services(configuration):
     services = {}
@@ -129,9 +129,9 @@ def mk_architecture_ondisk(services, nginx_conf_dir=None):
 
     mk_workspace_ondisk()
 
-    if 'NGINXR_CONFIG' in os.environ:
-        print('USING NGINX CONFS set by env var NGINXR_CONFIG')
-        nginx_conf_dir = os.environ['NGINXR_CONFIG']
+    if 'NGINX_CONFIG' in os.environ:
+        print('USING NGINX CONFS set by env var NGINX_CONFIG')
+        nginx_conf_dir = os.environ['NGINX_CONFIG']
 
     print(f'LOADING NGINX CONFS located at {nginx_conf_dir}')
 
