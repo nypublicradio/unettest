@@ -1,8 +1,8 @@
-========================
- NGINXRAY Configuration
-========================
+===========================
+ ``unettest`` Configuration
+===========================
 
-You can configure NGINXRAY to mimic any network. You can configure it with a
+You can configure ``unettest`` to mimic any network. You can configure it with a
 simple and straight-forward declarative configuration language, similar to
 writing docker-compose. 
 

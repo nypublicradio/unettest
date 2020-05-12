@@ -2,18 +2,22 @@
  Tutorial
 ==========
 
-How to Work With NGINXRAY
--------------------------
+How to Work With ``unettest``
+-----------------------------
 
-I think it will be easiest to show how to use NGINXRAY with terminal screen sessions.
-It'll reveal how to think with NXR most directly.
+I think it will be easiest to show how to use ``unettest`` with terminal screen sessions.
+It'll reveal how to think with NXR most directly. 
+
+.. NOTE::
+  In these, the infant days of ``unettest``, it was going by ``nginxray``. Please make
+  the mental substitutions until I get around to updating the screenshots :)
 
 Setup
 ^^^^^
 
 .. image:: tutorial_photos/0alias.png
 
-You must first acquire NGINXRAY. You can get a copy here:
+You must first acquire ``unettest``. You can get a copy here:
 
 * `MacOS <https://nginxray.s3.us-east-2.amazonaws.com/nginxray.mac>`_
   (`SHA-256 checksum <https://nginxray.s3.us-east-2.amazonaws.com/mac-sha256>`_)
@@ -34,14 +38,14 @@ Set
 
 .. image:: tutorial_photos/2set.png
 
-Firing off the left-side NGINXRAY with ``-s``, to "spin" up the servers and let them go.
+Firing off the left-side ``unettest`` with ``-s``, to "spin" up the servers and let them go.
 
 Go
 ^^
 
 .. image:: tutorial_photos/3go.png
 
-Firing off the right-side NGINXRAY with a ``-t`` to run the "tests".
+Firing off the right-side ``unettest`` with a ``-t`` to run the "tests".
 
 See how the contents of those tests are reported in the logs on the left. Super easy to
 develop with! Like shining a flashlight in a dark corner.
@@ -60,4 +64,4 @@ A Network REPL!
 .. image:: tutorial_photos/5repl.png
 
 You can work with any number of services like a REPL. You can access a service directly (I
-would consider this going "around") or through the NGINX server being run by NGINXRAY.
+would consider this going "around") or through the NGINX server being run by ``unettest``.
