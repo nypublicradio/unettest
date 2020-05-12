@@ -35,8 +35,13 @@ class Service:
         """
         Accept well-formatted config dict and add the route to the service.
         """
-        r = self.Route(route_config['name'], route_config['route'], route_config['method'], 
-                route_config['status'],  route_config['params'])
+        try:
+            r = self.Route(route_config['name'], route_config['route'], route_config['method'], 
+                    route_config['status'],  route_config.get('params', None))
+        except KeyError as k:
+            import pprint
+            exit(f"The config file is malformed :(\n   Missing required configuration {k} in \n\n{pprint.pformat(route_config, width=20)}")
+
         self.routes.append(r)
 
     def insert_requirements(self, filename):
