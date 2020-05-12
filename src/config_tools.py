@@ -3,7 +3,7 @@ import os
 
 from src.service import Service
 from src.test_case import TestCase
-WORK_DIR='./unitest_apps'
+WORK_DIR='./unettest_apps'
 
 def parse_services(configuration):
     services = {}
@@ -27,6 +27,8 @@ def parse_tests(configuration):
 
 def tear_down_local_network():
     os.system('docker-compose down')
+    os.system(f'rm -rf {WORK_DIR}')
+    os.system(f'echo "unettest has finished its business"')
 
 
 def spin_up_local_network(detach=True, build=True):

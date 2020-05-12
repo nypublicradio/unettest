@@ -3,6 +3,7 @@ import sys
 import time
 import requests
 import argparse
+import signal
 
 import src.config_tools as config_tools
 import src.test as test
@@ -13,6 +14,13 @@ RUN_TESTS = 'r'
 START_N_WAIT = 's'
 TEST_ONLY = 't'
 QUIT = 'q'
+
+def signal_handler(signal, frame):
+    config_tools.tear_down_local_network()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
 
 def choose_behavior(services, tests, what_to_do=None):
     what_to_do = input(f"""
@@ -46,7 +54,9 @@ Running interactive mode.
 
     elif what_to_do.lower() == START_N_WAIT:
         config_tools.mk_architecture_ondisk(services, nginx_conf_dir=args.nginx_conf)
+        
         config_tools.spin_up_local_network(detach=False)
+        config_tools.tear_down_local_network()
 
     elif what_to_do.lower() == TEST_ONLY:
         try:
@@ -77,8 +87,8 @@ def wait_until_up(services):
 
 
 parser = argparse.ArgumentParser(usage='unettest [-hrst] [--nginx-conf NGINX_CONF] file', 
-        description='if u got a network, u net test - - - - - - - - v0.1.0', 
-        epilog='help, tutorials, documentation: available ~~ unettest.net',
+        description='if u got a network, u net test - - - NYPR - - - v0.1.0', 
+        epilog='help, tutorials, documentation: available ~~ http://docs-unettest.s3-website.us-east-2.amazonaws.com/',
         formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=35))
 parser.add_argument('config', help='unettest yaml config', type=str)
 parser.add_argument('-r', '--run-tests', help='start unettest and run tests', action='store_true')
