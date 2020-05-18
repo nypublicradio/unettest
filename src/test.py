@@ -31,6 +31,9 @@ def send_to_nginx(path, request_type):
 
 
 def run_test(test, services):
+    """
+    return true if success, false if failure
+    """
     successes = []
 
     response = send_to_nginx(test.uri, test.req_method)
@@ -39,6 +42,10 @@ def run_test(test, services):
     route_ = [r for r in sys_under_test.routes if r.name == test.expect.route_].pop()
 
     last_req = requests.get(f'http://localhost:{sys_under_test.exposed_port}/last_call')
+
+    if last_req.status_code == 404:
+        print(f'  request {test.req_method} {test.uri} was never called')
+        return False
 
     report_from_service = json.loads(last_req.text)
     target = test.uri
@@ -51,8 +58,8 @@ def run_test(test, services):
             # we take out `gnarly` and replace it with the <awesome> placeholder again.
             target = target.replace(varvalue, f'<{varname}>')
 
-    print(f'  asserting target route was called . . . ', end='')
     target_called = report_from_service['route'] == route_.route_
+    print(f'  asserting target route {route_.route_} was called . . . ', end='')
     if target_called:
         print('\tYes')
         successes.append(True)
