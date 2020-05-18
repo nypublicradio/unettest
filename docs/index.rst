@@ -24,7 +24,7 @@ This is ``unettest``\
 
 Your code is unit tested. Is your network? Why not? Get some tests.
 
-Now that we live in a microservice world, isn't it a little annoying keeping
+Now that we live in a microservice world, isn't it a little annoying to keep
 track of all the weird ways they talk to each other, crisscrossing back and
 forth? And isn't it aggravating that those connections are not checked by unit
 tests?
@@ -59,7 +59,7 @@ Requirements:
 
 * Docker
 * docker-compose
-* `\ ``unettest`` for MacOS <https://unettest.s3.us-east-2.amazonaws.com/unettest.mac>`_
+* `unettest for MacOS <https://unettest.s3.us-east-2.amazonaws.com/unettest.mac>`_
   (`SHA-256 checksum <https://unettest.s3.us-east-2.amazonaws.com/mac-sha256>`_)
 
 
@@ -72,7 +72,7 @@ Requirements:
   Use ``unettest --help``\ .
 
 
-You can pass in an :doc:`config_document`. You can specify nginx.conf files from
+You can pass in a :doc:`config_document`. You can specify nginx.conf files from
 anywhere you like. ::
 
    $ unettest config.yml --nginx-conf ~/my/nginx/conf

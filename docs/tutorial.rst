@@ -6,7 +6,7 @@ How to Work With ``unettest``
 -----------------------------
 
 I think it will be easiest to show how to use ``unettest`` with terminal screen sessions.
-It'll reveal how to think with NXR most directly. 
+It'll reveal how to think with ``unettest`` most directly. 
 
 .. NOTE::
   In these, the infant days of ``unettest``, it was going by ``nginxray``. Please make

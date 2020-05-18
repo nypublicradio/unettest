@@ -13,20 +13,21 @@ and tested for success.
 Service Definitions
 -------------------
 
-NXR is a group of fake ``service``\ s that represent a real network. If you have
-multiple real-world servers or serverless microservices running and an NGINX
-server is handling inbound traffic rules and routing instructions, you can
-define tests for that NGINX server. NXR will create a test double for each of
-your microservices--they are defined in NXR as a ``service``\ . Your NGINX.conf
-can talk to each of them as if they were the real thing, but for ease of use,
-NXR fakes them on your own computer--you don't even need to be connected to the
-internet to test your network rules!
+``unettest`` is a group of fake ``service``\ s that represent a real network.
+If you have multiple real-world servers or serverless microservices running and
+an NGINX server is handling inbound traffic rules and routing instructions, you
+can define tests for that NGINX server. ``unettest`` will create a test double
+for each of your microservices--they are defined in ``unettest`` as a
+``service``\ . Your NGINX.conf can talk to each of them as if they were the
+real thing, but for ease of use, ``unettest`` fakes them on your own
+computer--you don't even need to be connected to the internet to test your
+network rules!
 
-When you load an NGINX.conf into NXR, it'll use the routing rules as you have
-defined them for your production systems. Since there is a replica (as defined
-by your NXR Service Definitions) of the real network on your local machine, you
-can manipulate and test routing rules without leaving your own local development
-environment.
+When you load an NGINX.conf into ``unettest``, it'll use the routing rules as
+you have defined them for your production systems. Since there is a replica (as
+defined by your ``unettest`` Service Definitions) of the real network on your
+local machine, you can manipulate and test routing rules without leaving your
+own local development environment.
 
 Test Doubles
 ^^^^^^^^^^^^
@@ -56,10 +57,10 @@ and might return back a list of books
 * Essays One, Lydia Davis
 * The Autobiography of, Miles Davis
 
-NXR doesn't care about that. NXR is simply interested in testing the routes.
-You can assume that your bookstore service is working and that if you did
-actually call it, it would return that. So we can define a ``service`` that
-looks like ``bookstore`` from the perspective of NGINX.
+``unettest`` doesn't care about that. ``unettest`` is simply interested in
+testing the routes.  You can assume that your bookstore service is working and
+that if you did actually call it, it would return that. So we can define a
+``service`` that looks like ``bookstore`` from the perspective of NGINX.
 
 .. code-block:: yaml
 
@@ -73,9 +74,9 @@ looks like ``bookstore`` from the perspective of NGINX.
           params:
             - author
 
-This tells NXR that you have a service, ``bookstore`` that can accept routes to
-``/books/non-fiction`` and will normally return a 200. It accepts params for
-author. Pretty straightforward!
+This tells ``unettest`` that you have a service, ``bookstore`` that can accept
+routes to ``/books/non-fiction`` and will normally return a 200. It accepts
+params for author. Pretty straightforward!
 
 And so we know we have some fancy logic in our NGINX.conf that will pass a
 request from elsewhere to our venerable ``bookstore`` service. Let's make sure
