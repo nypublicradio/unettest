@@ -60,12 +60,16 @@ class Service:
             f.write('from flask import Flask, request\n')
             f.write('import inspect\n')
             f.write('import time\n')
+            f.write('import json\n')
             f.write('app = Flask(__name__)\n')
             f.write('last_requests = []\n')
             f.write(f"""
 @app.route('/last_call')
 def last_call():
-    return last_requests[-1]
+    try:
+        return json.dumps(last_requests.pop())
+    except IndexError:
+        return "No Previous Requests Recorded.", 404
 
 """)
             for r in self.routes:
