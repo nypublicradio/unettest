@@ -22,7 +22,13 @@ class Service:
         self.exposed_port = 0
 
     def __str__(self):
-        return "Service " + self.name
+        return "service " + self.name
+
+    def get_route(self, name):
+        matching_routes = [r for r in self.routes if r.name == name]
+        if matching_routes:
+            return matching_routes.pop()
+        return None
 
     def load_home_route(self):
         """
