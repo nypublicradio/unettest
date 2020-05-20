@@ -10,10 +10,10 @@ import src.test as test
 
 from src.service import Service
 
+QUIT = 'q'
 RUN_TESTS = 'r'
 START_N_WAIT = 's'
 TEST_ONLY = 't'
-QUIT = 'q'
 
 def signal_handler(signal, frame):
     config_tools.tear_down_local_network()

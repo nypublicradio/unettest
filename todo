@@ -4,3 +4,6 @@
 - rm the folder left behind by nxr
 ✓ build.sh `docs-only` `app-only`
 - better error/reporting on loaded nginx confs
+- tests at None
+- params optional in config
+✓ lists of expects
