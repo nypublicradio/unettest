@@ -7,9 +7,9 @@ class TestCase:
             'target': '/api/v1/playlists/prophet_xml_import/wqxr/?xml_contents=%3Ctitle%3Eparty%204%20u%3C%2Ftitle%3E%0A%3Ccomposer%3ECharli%20XCX%3C%2Fcomposer%3E',
             'vars': {'stream': 'wqxr'},
             'expect':[
-                // not sure how to twist the yaml into a better data structure than a 
-                // list of single-key dicts. i couldn't find a way to make it easy 
-                // to write the yaml and also easy to parse later, so i chose yaml 
+                // not sure how to twist the yaml into a better data structure than a
+                // list of single-key dicts. i couldn't find a way to make it easy
+                // to write the yaml and also easy to parse later, so i chose yaml
                 // writability over data structure elegance
                 { 'publisher.prophet_xml_import':
                     { 'called_times': 1,
@@ -41,14 +41,13 @@ class TestCase:
         self.uri_vars = test_configuration.get('vars', None)
         self.expects = self.parse_expects(test_configuration['expect'])
 
-
     def __str__(self):
         return f"testing {self.name}"
 
     class ExpectAssertion:
         """
-        a test is (1) setup 
-                  (2) execute 
+        a test is (1) setup
+                  (2) execute
                   (3) assert
         ExpectAssertion is an ORM for (3)
         """

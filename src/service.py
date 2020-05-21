@@ -1,12 +1,13 @@
 import re
 
+
 class Service:
     """
     Representation of a single SERVICE as represented in YAML.
     """
     class Route:
         """
-        Each SERVICE has 1+ routes. A route has a name, route, method, status and 
+        Each SERVICE has 1+ routes. A route has a name, route, method, status and
         optional query params.
         """
         def __init__(self, name, route_, method, status, params):
@@ -42,8 +43,8 @@ class Service:
         Accept well-formatted config dict and add the route to the service.
         """
         try:
-            r = self.Route(route_config['name'], route_config['route'], route_config['method'], 
-                    route_config['status'],  route_config.get('params', None))
+            r = self.Route(route_config['name'], route_config['route'], route_config['method'],
+                           route_config['status'],  route_config.get('params', None))
         except KeyError as k:
             import pprint
             exit(f"The config file is malformed :(\n   Missing required configuration {k} in \n\n{pprint.pformat(route_config, width=20)}")
@@ -69,7 +70,7 @@ class Service:
             f.write('import json\n')
             f.write('app = Flask(__name__)\n')
             f.write('last_requests = []\n')
-            f.write(f"""
+            f.write("""
 @app.route('/last_call')
 def last_call():
     try:
@@ -107,4 +108,3 @@ RUN pip install -r requirements.txt
 COPY . .
 CMD ["flask", "run", "-p", "{exposed_port}"]
 """)
-

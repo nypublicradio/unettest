@@ -1,4 +1,3 @@
-import os
 import sys
 import time
 import requests
@@ -8,16 +7,16 @@ import signal
 import src.config_tools as config_tools
 import src.test as test
 
-from src.service import Service
-
 QUIT = 'q'
 RUN_TESTS = 'r'
 START_N_WAIT = 's'
 TEST_ONLY = 't'
 
+
 def signal_handler(signal, frame):
     config_tools.tear_down_local_network()
     sys.exit(0)
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -54,7 +53,6 @@ Running interactive mode.
 
     elif what_to_do.lower() == START_N_WAIT:
         config_tools.mk_architecture_ondisk(services, nginx_conf_dir=args.nginx_conf)
-        
         config_tools.spin_up_local_network(detach=False)
         config_tools.tear_down_local_network()
 
@@ -86,10 +84,10 @@ def wait_until_up(services):
     #         up = [False]
 
 
-parser = argparse.ArgumentParser(usage='unettest [-hrst] [--nginx-conf NGINX_CONF] file', 
-        description='if u got a network, u net test - - - NYPR - - - v0.1.0', 
-        epilog='help, tutorials, documentation: available ~~ http://unettest.net',
-        formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=35))
+parser = argparse.ArgumentParser(usage='unettest [-hrst] [--nginx-conf NGINX_CONF] file',
+            description='if u got a network, u net test - - - NYPR - - - v0.1.0',
+            epilog='help, tutorials, documentation: available ~~ http://unettest.net',
+            formatter_class=lambda prog: argparse.HelpFormatter(prog, max_help_position=35))
 parser.add_argument('config', help='unettest yaml config', type=str)
 parser.add_argument('-r', '--run-tests', help='start unettest and run tests', action='store_true')
 parser.add_argument('-s', '--spin-up', help='spin up servers and wait', action='store_true')
