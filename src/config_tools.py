@@ -3,7 +3,8 @@ import os
 
 from src.service import Service
 from src.test_case import TestCase
-WORK_DIR='./unettest_apps'
+WORK_DIR = './unettest_apps'
+
 
 def parse_services(configuration):
     services = {}
@@ -19,11 +20,13 @@ def parse_services(configuration):
         services[name] = service
     return services
 
+
 def parse_tests(configuration):
     tests = []
     for test_name, conf in configuration:
         tests.append(TestCase(test_name, conf))
     return tests
+
 
 def tear_down_local_network():
     os.system('docker-compose down')
@@ -56,10 +59,11 @@ def parse_input_config(config):
             # Much better.
             y['services'] = [(list(c.keys())[0], list(c.values())[0]) for c in y['services']]
             y['tests'] = [(list(c.keys())[0], list(c.values())[0]) for c in y['tests']]
-            
+
             return y
         except yaml.YAMLError as e:
             print(e)
+
 
 def mk_workspace_ondisk():
     if not os.path.exists(WORK_DIR):
@@ -69,7 +73,7 @@ def mk_workspace_ondisk():
 def configure_service_ondisk(service_name, service):
     """
     Configure local directory to later build into SERVICE docker image.
-    
+
     MAKES DIR service
     """
     if not os.path.exists(f'{WORK_DIR}/{service_name}'):

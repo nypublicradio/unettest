@@ -3,12 +3,13 @@ import requests
 
 from collections import namedtuple
 
+
 def run_tests(tests, services):
     test_reports = []
     Report = namedtuple('Report', ['test_name', 'success'])
     for test in tests:
         print()
-        print("Testing",test.name)
+        print("Testing", test.name)
         success = run_test(test, services)
         test_reports.append(Report(test.name, success))
     print()
@@ -36,7 +37,7 @@ def run_test(test, services):
     """
     successes = []
 
-    nginx_response = send_to_nginx(test.uri, test.req_method)
+    send_to_nginx(test.uri, test.req_method)
 
     for expect in test.expects:
         sys_under_test = services.get(expect.service)
