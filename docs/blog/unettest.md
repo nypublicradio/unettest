@@ -7,7 +7,7 @@ it turns out to be not easy. The natural thing to do is to reach for our trusted
 tools, those reliable methods and strategies for digging ourselves out of holes
 like this. And sometimes, those tools are missing.
 
-So I rolled my own.
+So we roll our own.
 
 A few months ago, I wanted to write NGINX configurations. I was new to NGINX and
 working to figure it out. Their documentation (though lovely) is impenetrable. I
