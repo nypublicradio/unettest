@@ -34,8 +34,9 @@ corners of an NGINX edge case... The only way to figure out what on Earth was
 going on was to walk through all the different potential paths of logic in these
 network configuration files, and ugh, that was not pretty. Things that I would
 assume to work one way were behaving in entirely different ways. There was no
-way to get a certain answer about how things were or were not working. Until I
-wrote [`unettest`](http://unettest.net).
+way to get a certain answer about how things were or were not working.
+
+Until I wrote [`unettest`](http://unettest.net).
 
 ## The Monolith and the Microservice
 
@@ -93,10 +94,10 @@ With that done, I committed my NGINX changes and deployed to Staging. But... it
 did not work. The requests were not being mirrored correctly. The NGINX
 documentation, through complete and easy to reference, is not beginner friendly.
 I thought my conf files were malfunctioning due to my own ignorance when it
-really turned out to be a bug(?) or undefined behavior(?) but I did not know
-this at the time. Lacking my normal tools that I use to learn unfamiliar
-technologies (tests!), I tried to fix the conf files with that classic fallback
-development strategy--guess and check.
+really turned out to be a bug(?) or undefined behavior(?) in NGINX itself but I
+did not know this at the time. Lacking my normal tools that I use to learn
+unfamiliar technologies (tests!), I tried to fix the conf files with that
+classic fallback development strategy--guess and check.
 
 But as I guessed and checked, NGINX's behavior became stranger and stranger.
 
@@ -141,7 +142,7 @@ minutes between each time I ask. [1]
 I kept coming back to the question, "Why?" Why is NGINX behaving like this?
 NGINX was not giving easy answers. The answers I got were half-answers (mirrors
 go unlogged by default) and they were hard to find. By the time I found an
-answer, I had forgotten my question ("umm was $1 used here or was it being
+answer, I had forgotten my question ("was $1 used here or was it being
 redirected in this one?"). The differences were slight, the moving pieces were
 many, and I was getting frustrated.
 
@@ -149,7 +150,7 @@ many, and I was getting frustrated.
 
 How to answer these questions? How to ask them in a less painful way? I could go
 with my changes directly into the Staging NGINX server or else I could add a
-dummy/test NGINX server to our network but both of these were mucking up the
+dummy/test NGINX server to our network but... no. Both of these were mucking up the
 nonprod environment too much for my taste. Additionally, this did not give me
 better logs or analysis of what was happening.
 
@@ -172,8 +173,8 @@ been sent the correct request.
 
 Why not mock them?
 
-The only thing matters about Monolith here is that it is called with
-`/api/v1/important_update/mycrazyval` and the only important thing about the
+The only thing that matters about Monolith here is that it is called with
+`/api/v1/important_update/mycrazyval` and the only important thing about 
 Microservice is that it is invoked at the same time, but with
 `/new/api/update?value=mycrazyval`.
 
@@ -261,9 +262,9 @@ This is a definition of a test that can be run against the network of Mocks.
 It will curl `"/api/v1/important_update/urgent/"` against the configured
 internal NGINX server and then assert that the route defined in the `monolith`
 server block and `microservice` are called in the ways they should be called.
-This information is collected from the within the Mocks themselves. We can feel
-safe knowing that when we run these tests, they have run all the way in and out
-of the NGINX scripts under test. If the Mocks are correctly configured, the
+This information is collected from the within the Mocks themselves so we can
+feel safe knowing that when we run these tests, they have run all the way in and
+out of the NGINX scripts under test. If the Mocks are correctly configured, the
 route is guaranteed to work as it says it does. It is now under test coverage.
 
 ## Take away
@@ -285,9 +286,14 @@ specialist AWS infrastructure (hello, lambda specific request json --
 
 `unettest` can jack up a Lambda or an NGINX configuration or anything else into
 a test harness so you can easily get under the hood of your network. You can see
-how things work in the cloud from the isolated safety of your local dev setup. u
-got a network? u net test.
+how things work in the cloud from the isolated safety of your local dev
+environment. u got a network? u net test.
 
+---
+
+If you want to get started with unettest, check out the website and documentation at [unettest.net](http://unettest.net). There is a [tutorial](http://unettest.net/tutorial.html)! Please reach out to me personally if you have trouble or questions. `unettest` is really a high-functioning beta. Send me bug reports! Feature requests! Whatever you need.
+
+<br>
 
 [1] So... what's the verdict on that weird NGINX behavior? I isolated things
 in `unettest` and it looks to me that if you pass a `$1` to an internal mirror,
