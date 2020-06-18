@@ -33,6 +33,7 @@ function build_and_deploy_docs {
 	./rm_nav_header.sh
 
 	aws s3 cp ./docs/build s3://unettest.net/ --recursive --acl public-read
+	aws s3 cp ./docs/blog s3://unettest.net/ --recursive --acl public-read
 }
 
 case $1 in 
