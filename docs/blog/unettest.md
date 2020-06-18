@@ -195,7 +195,7 @@ Things we do not have to worry about:
 
 + that Monolith does 10 million other things
 + what Monolith or Microservice does when these particular endpoints are invoked
-+ that Microservice is a Lambda or that Monolith is a legacy pile of spagetti
++ that Microservice is a Lambda or that Monolith is a legacy pile of spaghetti
 + what Monolith's dependencies and requirements are beyond the scope of its public
 interface
 + that these might be black-box services that cannot be controlled or might (!!)
