@@ -267,7 +267,7 @@ feel safe knowing that when we run these tests, they have run all the way in and
 out of the NGINX scripts under test. If the Mocks are correctly configured, the
 route is guaranteed to work as it says it does. It is now under test coverage.
 
-## Take away
+## Takeaway
 
 ![mechanic](https://docs-unettest.s3.us-east-2.amazonaws.com/mechanic.jpg)
 `unettest` started as a tool for me to put my untested network rules under
