@@ -44,14 +44,13 @@ Here at NYPR, we have a Monolith that does all sorts of things. We are in the
 process of excising a part of it to turn into a discrete Microservice with the
 goal of eventually recycling enough parts of it to put the whole Monolith down.
 
-We also have a playout system (actually, two) used by our radio team that sends
-out an update every few minutes. These requests come through our NGINX server
-and are routed to the Monolith. For now and into the foreseeable future, we want
-to support both the Monolith and the Microservice running simultaneously. As a
-DevOps engineer on staff, I was asked to write a rule in our NGINX configuration
-to mirror the requests: they should go to both the Microservice and the
-Monolith. This way, the Monolith would continue to work while the Microservice
-was under development.
+We have a playout system used by our radio team that sends out an update every
+few minutes. These requests come through our NGINX server and are routed to the
+Monolith. For now and into the foreseeable future, we want to simultaneously
+support the Monolith and the Microservice. As a DevOps engineer on staff, I was
+asked to write a rule in our NGINX configuration to mirror the requests: they
+should go to both the Microservice and the Monolith.  This way, the Monolith
+would continue to work while the Microservice was under development.
 
 Seems easy. Referencing the NGINX docs, we could take the existing rule and add
 a `mirror` directive to a special `internal` location block.
@@ -78,12 +77,12 @@ location ~* /microservice_mirror/(.*) {
 ```
 
 > Note: I am trying to do a little funny business with the `$1`. The format of
-the new API is slightly different from the old one so I need to manipulate it. I
-know now (after making `unettest`) that this manipulation was what was the
-source of my NGINX pain. It seems that you cannot pass `$1` to the _internal_
-location block and parse it like you would with a regular route. It will be
-passed literally, as in `?value=$1` instead of expanding and interpolating the
-path. I did not know why this was happening or why it only happened sometimes.
+the new API is slightly different from the old one so I need to manipulate it.
+I know now (after making `unettest`) that this manipulation was the source of
+my NGINX pain. It seems that you cannot pass `$1` to the _internal_ location
+block and parse it like you would with a regular route. It will be passed
+literally, as in `?value=$1` instead of expanding and interpolating the path. I
+did not know why this was happening or why it only happened sometimes.
 
 I fulfilled the requirements (or at least tried to):
 
@@ -111,10 +110,9 @@ had to:
 + Wade through CloudWatch logs to find the recorded behavior
 
 Searching CloudWatch is not an easy or reliable way to detect subtle nuances in
-configuration changes. Sometimes the test results would not appear at all,
-sometimes I would be searching old time frames, sometimes old tests would be
-mixed in with the current tests, I was flooded with unrelated logs. It was
-bad.
+configuration changes. Often, the test results would not appear at all, I would
+be searching old time frames, or old tests would be mixed in with the current
+tests. I was flooded with unrelated logs.
 
 It was a bad way of asking questions. This development cycle was so kludgy , I
 was able to suss out WHAT the behavior was but not WHY. Not even WHAT EXACTLY.
@@ -122,14 +120,14 @@ was able to suss out WHAT the behavior was but not WHY. Not even WHAT EXACTLY.
 ## An NGINX Corner Case
 
 The strange symptom I observed was that my Microservice was getting requests
-that look like `$microservice/new/api/update?value=$1`. Ummm what?  NGINX is
-supposed to uhh INTERPOLATE those money variables?? I should be getting
-`?value=mycrazyvalue` not `?value=$1`. And even stranger, I found that if I
-swapped the mirror, it worked.
+that look like `$microservice/new/api/update?value=$1`. What?  NGINX is
+supposed to INTERPOLATE the money variables?? I should be getting
+`?value=mycrazyvalue` not `?value=$1`. Even stranger, I found that if I swapped
+the mirror, it worked.
 
-That is, if I mirror a -> b, my values are not parsed. But if I mirrored b -> a,
-it would successfully parse the route. This is weird. But if I wanted to verify
-that a -> b worked or did not, it would be a 15 minute deployment's wait to
+That is, when mirroring a -> b, the values do not get parsed. Mirroring b -> a
+would successfully parse the route. Weird. However, if I wanted to verify that
+x -> y worked or did not work, it would be a 15 minute deployment's wait to
 learn the answer.
 
 I wondered, if a -> b has a working `$request_uri` and broken `$1`, does b -> a
@@ -148,33 +146,39 @@ many, and I was getting frustrated.
 
 ## A Better Way to Ask Questions
 
-How to answer these questions? How to ask them in a less painful way? I could go
-with my changes directly into the Staging NGINX server or else I could add a
-dummy/test NGINX server to our network but... no. Both of these were mucking up the
-nonprod environment too much for my taste. Additionally, this did not give me
-better logs or analysis of what was happening.
+How to answer these questions? How to ask them in a less painful way? 
 
-I thought I could install NGINX on my computer and run the confs locally. Lol!
-As if! NGINX was not happy running on my silly little laptop. It is server
-software and belongs on a server.
+How to experiment iteratively and informatively on an NGINX configuration with a
+learner's mindset? How to do so quickly? One option would be to load changes
+directly into the Staging NGINX server. Another way could be adding a dummy/test
+NGINX server to the network. These are not good solutions--they muck up the
+nonprod environment too much. More importantly, they do not give better
+logs or analysis or insight into what is happening.
 
-Then I thought to use Docker. Here is a winning idea! But if I load NGINX into
-Docker, how would it talk to my services? I was sick of trying to hook into
-real-world networks and real-world services. There were too many complications,
-side effects, and fragile bits. I wanted to rigorously isolate my NGINX files.
-They wanted to squirm away. I was bent on pinning them down for interrogation.
+Another idea would be to run NGINX locally. This seems like a prime candidate
+for the [Works On My Machine](https://blog.codinghorror.com/the-works-on-my-machine-certification-program/) certification. It is a dubious solution. NGINX is server 
+software and should be running on servers.
+
+This sounds like a great fit for docker! But if we shove the NGINX files into
+docker, how would NGINX talk to services on the internet?
+
+I was sick of trying to hook into real-world networks and real-world services.
+There were too many complications, side effects, and fragile bits. I wanted to
+rigorously isolate the NGINX files.  They wanted to squirm away. I was bent on
+pinning them down for interrogation.
 
 ![Interrogation](https://s3.amazonaws.com/unettest.net/assets/rick_dicker_interrogation.png)
 
-At this point we are only interested in the Monolith and the Microservice
-abstractly, as **interfaces**. We do not care what these services do after they
-have been sent the correct request (that's a side effect). Only that they _have_
-been sent the correct request.
+Looking at it from inside NGINX, the Monolith and the Microservice are being
+referenced abstractly, as **interfaces**. It does not matter what these services
+do when they have been sent the correct request (that's a side effect). The
+crucial thing is that they _have_ been sent the correct request and that they
+return a certain response.
 
 Why not mock them?
 
-The only thing that matters about Monolith here is that it is called with
-`/api/v1/important_update/mycrazyval` and the only important thing about 
+The only thing that matters about Monolith is that it is called with
+`/api/v1/important_update/mycrazyval` and the only important thing about
 Microservice is that it is invoked at the same time, but with
 `/new/api/update?value=mycrazyval`.
 
@@ -199,14 +203,14 @@ services:
             - crazyval
 ```
 
-This yaml config follows a standard I have created for this test framework I
+This yaml config follows a standard I have created for the test framework I
 wrote called [`unettest`](http://unettest.net), a test harness for NGINX, APIs, and online services.
 
 This yaml config tells `unettest` what the network looks like: what services are
 on the network and what their interfaces look like. Now we can develop
 confidently against them.
 
-Things we do not have to worry about:
+Things that do not matter:
 
 + that Monolith does 10 million other things
 + what Monolith or Microservice does when these particular endpoints are invoked
@@ -215,12 +219,12 @@ Things we do not have to worry about:
 + that these might be black-box services that cannot be controlled or might (!!)
 be only available in Production environments 
 
-Under the hood, `unettest` will parse this valid and complete configuration file
-and create two little local containerized web services conforming to their
+Under the hood, `unettest` parses this valid and complete configuration file and
+creates two little local containerized web services conforming to their
 definitions. They are not functional, but they behave as if they are and their
 behavior is monitored by `unettest`. Their ports are exposed via localhost. More
-interesting though, `unettest` also spins up an NGINX server. You must configure
-it with NGINX conf files. NGINX is exposed on `localhost:4999`.
+interesting though, `unettest` spins up an NGINX server. It must be configured
+with NGINX conf files. NGINX is exposed on `localhost:4999`.
 
 If I invoke
 
@@ -233,7 +237,7 @@ little network.
 
 ## Unit Tests
 
-The Mocks we defined above are Spies; let's use them to observe our network's
+The Mocks we defined above are Spies; they can be used to observe the network's
 behavior.
 
 ``` yaml
@@ -296,8 +300,8 @@ If you want to get started with unettest, check out the website and documentatio
 <br>
 
 [1] So... what's the verdict on that weird NGINX behavior? I isolated things
-in `unettest` and it looks to me that if you pass a `$1` to an internal mirror,
-it will not evaluate/expand it. But `$request_uri` works from both the mirror and
+in `unettest` and it looks like if you pass a `$1` to an internal mirror,
+it will not evaluate/expand it. However, `$request_uri` works from both the mirror and
 parent block. Always. 
 
 `$1` cannot be accessed directly from the mirror as if it is in scope,
