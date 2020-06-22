@@ -15,8 +15,6 @@ It'll reveal how to think with ``unettest`` most directly.
 Setup
 ^^^^^
 
-.. image:: tutorial_photos/0alias.png
-
 You must first acquire ``unettest``. You can get a copy here:
 
 * `MacOS <https://nginxray.s3.us-east-2.amazonaws.com/nginxray.mac>`_
@@ -24,6 +22,10 @@ You must first acquire ``unettest``. You can get a copy here:
 
 Add it to your path (``/usr/local/bin/`` is an option). You can use it as it or give it a
 snappy alias.
+
+You can see how to write these config files here: :doc:`config_document`. 
+
+.. image:: tutorial_photos/0alias.png
 
 
 Ready

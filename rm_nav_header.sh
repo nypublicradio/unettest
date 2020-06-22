@@ -1,6 +1,6 @@
 #!/bin/bash
-# Not portable!! Lol!! Get urself some ag!!
-for f in `ag Navigation -l`; do
+# Not portable!! Lol!! Get urself some ack!!
+for f in `ack Navigation -l`; do
 	sed -i '' 's|^<h3>Navigation</h3>$|<br>|' $f
 done
 

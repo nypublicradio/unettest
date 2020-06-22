@@ -30,25 +30,31 @@ function build_and_deploy_docs {
 	echo '#### DOCUMENTATION ####'
 
 	sphinx-build -b html ./docs ./docs/build
+
 	./rm_nav_header.sh
 
 	aws s3 cp ./docs/build s3://unettest.net/ --recursive --acl public-read
 }
 
-case $1 in 
-	"docs")
-		echo "going to do docs!"
-		build_and_deploy_docs
-	;;
-	
-	"binary")
-		echo "going to do binary!"
-		build_and_deploy_binary
-	;;
+if [ -z $1 ] ; then
+	echo "going to do docs and binary!"
+	build_and_deploy_binary
+	build_and_deploy_docs
+else
 
-	*)
-		echo "going to do docs and binary!"
-		build_and_deploy_binary
-		build_and_deploy_docs
-	;;
-esac
+	case $1 in 
+		"docs")
+			echo "going to do docs!"
+			build_and_deploy_docs
+		;;
+		
+		"binary")
+			echo "going to do binary!"
+			build_and_deploy_binary
+		;;
+
+		*)
+			echo "run ./build.sh with either \`docs\` or \`binary\`"
+		;;
+	esac
+fi
