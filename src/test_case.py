@@ -60,11 +60,17 @@ class TestCase:
             if called_with:
                 self.params = called_with.get('params', None)
 
+    class ParseException(Exception):
+        pass
+
     @staticmethod
     def parse_expects(configuration):
-        expects = []
-        for expectdef in configuration:
-            unit_under_test, expect = list(expectdef.items())[0]
-            assertion = TestCase.ExpectAssertion(unit_under_test, expect)
-            expects.append(assertion)
-        return expects
+        try:
+            expects = []
+            for expectdef in configuration:
+                unit_under_test, expect = list(expectdef.items())[0]
+                assertion = TestCase.ExpectAssertion(unit_under_test, expect)
+                expects.append(assertion)
+            return expects
+        except Exception as e:
+            raise TestCase.ParseException("Error parsing test `expects`. Is your yaml well-formed?")

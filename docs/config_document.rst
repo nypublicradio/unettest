@@ -92,13 +92,13 @@ Test Definitions
       send: 'GET'
       target: '/authors/davis'
       expect:
-        bookstore.non_fiction:
-          called_times: 1
-          method: 'GET'
-          return_status: 200
-          called_with:
-            params:
-              author: davis
+        - bookstore.non_fiction:
+            called_times: 1
+            method: 'GET'
+            return_status: 200
+            called_with:
+              params:
+                author: davis
 
 This is defining a request sent to NGINX.conf and then checking against its
 intenal records that what you expect to happen is actually happening. 
