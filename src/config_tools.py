@@ -3,19 +3,23 @@ import os
 
 from src.service import Service
 from src.test_case import TestCase
-WORK_DIR = './unettest_apps'
 
+from src.custom_exceptions import ParseException
+
+WORK_DIR = './unettest_apps'
 
 def parse_services(configuration):
     services = {}
     exposed_port = 5000
 
-    for name, config in configuration:
+    for name, service_config in configuration:
+        if not name or not service_config:
+            raise ParseException("Error parsing service. Is your yaml well-formed?")
         service = Service(name)
         service.exposed_port = exposed_port
         exposed_port += 1
         service.load_home_route()
-        for route_ in config['routes']:
+        for route_ in service_config['routes']:
             service.load_route(route_)
         services[name] = service
     return services
@@ -24,7 +28,8 @@ def parse_services(configuration):
 def parse_tests(configuration):
     tests = []
     for test_name, conf in configuration:
-        tests.append(TestCase(test_name, conf))
+        test_case = TestCase(test_name, conf)
+        tests.append(test_case)
     return tests
 
 
@@ -117,7 +122,7 @@ def generate_dockercompose(services):
         f.write(f'  nginx_server:\n')
         f.write(f'    build: {WORK_DIR}/nginx_server\n')
         f.write(f'    ports:\n')
-        f.write(f'      - "4999:80"\n')
+        f.write(f'      - "4999:8888"\n')
         f.write(f'    environment:\n')
         f.write(f'      - env=dev\n')
         f.write(f'    expose:\n')

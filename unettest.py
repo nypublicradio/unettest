@@ -97,17 +97,12 @@ args = parser.parse_args()
 
 config, tests, services = None, None, None
 
-config = config_tools.parse_input_config(args.config)
 try:
+    config = config_tools.parse_input_config(args.config)
     tests = config_tools.parse_tests(config['tests'])
-except Exception as e:
-    print("Error parsing TESTS from config yaml:", e)
-    sys.exit(1)
-
-try:
     services = config_tools.parse_services(config['services'])
 except Exception as e:
-    print("Error parsing SERVICES from config yaml:", e)
+    print("Error parsing config yaml:", e)
     sys.exit(1)
 
 what_to_do = None

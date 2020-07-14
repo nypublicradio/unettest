@@ -66,13 +66,13 @@ that if you did actually call it, it would return that. So we can define a
 
   services:
     - bookstore:
-      routes:
-        - name: non_fiction
-          route: '/books/non-fiction'
-          method: 'GET'
-          status: 200
-          params:
-            - author
+        routes:
+          - name: non_fiction
+            route: '/books/non-fiction'
+            method: 'GET'
+            status: 200
+            params:
+              - author
 
 This tells ``unettest`` that you have a service, ``bookstore`` that can accept
 routes to ``/books/non-fiction`` and will normally return a 200. It accepts
