@@ -114,4 +114,8 @@ elif args.spin_up:
 elif args.test_only:
     what_to_do = TEST_ONLY
 
-choose_behavior(services, tests, what_to_do)
+try:
+    choose_behavior(services, tests, what_to_do)
+except Exception as e:
+    print("Error running unettest:", e)
+    sys.exit(1)

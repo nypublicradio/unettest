@@ -4,7 +4,7 @@ import os
 from src.service import Service
 from src.test_case import TestCase
 
-from src.custom_exceptions import ParseException
+from src.unettest_exceptions import ParseException
 
 WORK_DIR = './unettest_apps'
 
@@ -122,7 +122,7 @@ def generate_dockercompose(services):
         f.write(f'  nginx_server:\n')
         f.write(f'    build: {WORK_DIR}/nginx_server\n')
         f.write(f'    ports:\n')
-        f.write(f'      - "4999:8888"\n')
+        f.write(f'      - "4999:80"\n')
         f.write(f'    environment:\n')
         f.write(f'      - env=dev\n')
         f.write(f'    expose:\n')

@@ -3,6 +3,7 @@ import requests
 
 from collections import namedtuple
 
+from src.unettest_exceptions import MockServiceConnection
 
 def run_tests(tests, services):
     test_reports = []
@@ -37,7 +38,10 @@ def run_test(test, services):
     """
     successes = []
 
-    send_to_nginx(test.uri, test.req_method)
+    try:
+        send_to_nginx(test.uri, test.req_method)
+    except Exception:
+        raise MockServiceConnection("Can't connect to service under test. Perhaps an nginx misconfiguration? Is Host header correct?")
 
     for expect in test.expects:
         sys_under_test = services.get(expect.service)

@@ -1,3 +1,5 @@
+from src.unettest_exceptions import ParseException
+
 class TestCase:
     def __init__(self, name, test_configuration):
         """
@@ -60,8 +62,6 @@ class TestCase:
             if called_with:
                 self.params = called_with.get('params', None)
 
-    class ParseException(Exception):
-        pass
 
     @staticmethod
     def parse_expects(configuration):
@@ -73,4 +73,4 @@ class TestCase:
                 expects.append(assertion)
             return expects
         except Exception as e:
-            raise TestCase.ParseException("Error parsing test `expects`. Is your yaml well-formed?")
+            raise ParseException("Error parsing test `expects`. Is your yaml well-formed?")
