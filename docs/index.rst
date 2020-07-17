@@ -7,17 +7,6 @@ This is ``unettest``\
 ``if u got a network, u net test``
 ++++++++++++++++++++++++++++++++++
 
-.. toctree::
-   :maxdepth: 2
-
-   config_document
-
-   nginx_files
-
-   internal_components
-
-   tutorial
-
 
 ``unettest``, a network mocker, repl, and test harness
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -52,7 +41,7 @@ the APIs that connect them. ``unettest`` lets you unit test your network.
 
 ``unettest`` can be invoked as follows
 --------------------------------------
-**@ me on slack if you have questions or want a walkthrough!!**
+**@ me (jordan d) on slack if you have questions or want a walkthrough!!**
 
 Requirements:
 
@@ -60,7 +49,7 @@ Requirements:
 * Docker
 * docker-compose
 * `unettest for MacOS <https://unettest.s3.us-east-2.amazonaws.com/unettest.mac>`_
-  (`SHA-256 checksum <https://unettest.s3.us-east-2.amazonaws.com/mac-sha256>`_)
+  (`SHA-256 checksum <https://unettest.s3.us-east-2.amazonaws.com/unettest.mac-sha256>`_)
 
 
 
@@ -79,3 +68,21 @@ anywhere you like. ::
 
 The `--nginx-conf` option takes a directory and configures the NGINX routing
 using whatever is inside.
+
+
+unettest website directory
+++++++++++++++++++++++++++
+
+Just getting started? Go with the first one, "``unettest`` Configuration".
+
+.. toctree::
+   :maxdepth: 2
+
+   config_document
+
+   nginx_files
+
+   internal_components
+
+   tutorial
+
