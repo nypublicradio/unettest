@@ -3,7 +3,8 @@
 - support single file
 - rm the folder left behind by nxr
 ✓ build.sh `docs-only` `app-only`
-- better error/reporting on loaded nginx confs
-- tests at None
+✓ better error/reporting on loaded nginx confs
 - params optional in config
 ✓ lists of expects
+- 'using nginx at None'
+- test/report query params
