@@ -1,66 +1,75 @@
 import re
 
-
 class Service:
     """
     Representation of a single SERVICE as represented in YAML.
     """
     class Route:
         """
-        Each SERVICE has 1+ routes. A route has a name, route, method, status and
+        Each SERVICE has 1+ ROUTEs. A ROUTE has a name, route, method, status and
         optional query params.
         """
+        HOME_ROUTE_NAME = "home"
+
         def __init__(self, name, route_, method, status, params):
             self.name, self.route_, self.method, self.status, self.params = \
                     name, route_, method, status, params
 
+
         def __str__(self):
-            return f'Route {self.name} {self.method} {self.route_} {self.status}'
+            return f'Route -- {self.name} {self.method} {self.route_} {self.status}'
+
 
     def __init__(self, name):
         self.name = name
         self.routes = []
         self.exposed_port = 0
 
+
     def __str__(self):
-        return "service " + self.name
+        return "Service -- " + self.name
+
 
     def get_route(self, name):
+        """
+        Get Route with name `name`.
+        """
         matching_routes = [r for r in self.routes if r.name == name]
         if matching_routes:
             return matching_routes.pop()
         return None
 
-    def load_home_route(self):
+
+    def add_home_route(self):
         """
-        Give a simple / response identifying the server.
+        Add a simple '/' response identifying the server.
         """
-        r = self.Route("home", '/', 'GET', 200, None)
+        r = Service.Route(Service.Route.HOME_ROUTE_NAME, '/', 'GET', 200, None)
         self.routes.append(r)
 
-    def load_route(self, route_config):
+
+    def add_route(self, route_config):
         """
-        Accept well-formatted config dict and add the route to the service.
+        Accept well-formatted Route config dict and add the Route to the Service.
         """
         try:
-            r = self.Route(route_config['name'], route_config['route'], route_config['method'],
+            if route_config['name'] == Service.Route.HOME_ROUTE_NAME:
+                raise Exception(f"'{Service.Route.HOME_ROUTE_NAME}' is a reserved name. Please choose something else for your route name.")
+
+            r = Service.Route(route_config['name'], route_config['route'], route_config['method'],
                            route_config['status'],  route_config.get('params', None))
+
         except KeyError as k:
             import pprint
             exit(f"The config file is malformed :(\n   Missing required configuration {k} in \n\n{pprint.pformat(route_config, width=20)}")
 
         self.routes.append(r)
 
-    def insert_requirements(self, filename):
-        requirements = ['flask']
-        with open(filename, 'w') as f:
-            for requirement in requirements:
-                f.write(requirement + '\n')
 
     def generate_service(self, filename):
         """
-        Dynamically create a Flask app defining the service and its routes, exporting it
-        to the given filepath.
+        Dynamically create a Flask app defining the Service and its Routes, saving it
+        to the given filename.
         """
         route_vars = re.compile(r'<(\w*)>')
         with open(filename, 'w') as f:
@@ -94,6 +103,17 @@ def {r.name}({method_vars}):
     return str({r.params})
 
 """)
+
+
+    def insert_requirements(self, filename):
+        """
+        Populate a `requirements.txt` at the given filename.
+        """
+        requirements = ['flask']
+        with open(filename, 'w') as f:
+            for requirement in requirements:
+                f.write(requirement + '\n')
+
 
     def insert_dockerfile(self, filename, exposed_port):
         with open(filename, 'w') as f:

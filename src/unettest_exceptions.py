@@ -1,5 +1,5 @@
 class ParseException(Exception):
     pass
 
-class MockServiceConnection(Exception):
+class MockServiceConnectionException(Exception):
     pass
