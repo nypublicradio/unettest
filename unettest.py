@@ -4,7 +4,9 @@ import requests
 import argparse
 import signal
 
-import src.config_tools as config_tools
+import src.ondisk_config as ondisk_config
+import src.config_reader as config_reader
+import src.local_network as local_network
 import src.test as test
 
 QUIT = 'q'
@@ -14,12 +16,17 @@ TEST_ONLY = 't'
 
 
 def signal_handler(signal, frame):
-    config_tools.tear_down_local_network()
+    local_network.tear_down()
     sys.exit(0)
 
 
 signal.signal(signal.SIGINT, signal_handler)
 
+def print_success():
+    print("Success!! No failures (✿◠ ‿ ◠)")
+
+def exit_with_failures(num_failures):
+    sys.exit(f'Sorry babes, you have {num_failures} failures')
 
 def choose_behavior(services, tests, what_to_do=None):
     what_to_do = input(f"""
@@ -35,37 +42,38 @@ Running interactive mode.
 """) if what_to_do is None else what_to_do
 
     if what_to_do.lower() == RUN_TESTS:
-        config_tools.mk_architecture_ondisk(services, nginx_conf_dir=args.nginx_conf)
-        config_tools.spin_up_local_network()
+        ondisk_config.mk_architecture(services, args.nginx_conf)
+        local_network.spin_up()
 
         wait_until_up(services)
 
         test_results = test.run_tests(tests, services)
         failures = test.analyze_test_results(test_results)
+
         try:
             assert len(failures) == 0
         except AssertionError:
-            config_tools.tear_down_local_network()
-            sys.exit(f'Sorry pal, you have {len(failures)} failures')
+            local_network.tear_down()
+            exit_with_failures(len(failures))
 
-        config_tools.tear_down_local_network()
-        print("Success!! No failures")
+        local_network.tear_down()
+        print_success()
 
     elif what_to_do.lower() == START_N_WAIT:
-        config_tools.mk_architecture_ondisk(services, nginx_conf_dir=args.nginx_conf)
-        config_tools.spin_up_local_network(detach=False)
-        config_tools.tear_down_local_network()
+        ondisk_config.mk_architecture(services, args.nginx_conf)
+        local_network.spin_up(detach=False)
+        local_network.tear_down()
 
     elif what_to_do.lower() == TEST_ONLY:
         try:
             test_results = test.run_tests(tests, services)
             failures = test.analyze_test_results(test_results)
             assert len(failures) == 0
-            print("Success!! No failures")
+            print_success()
         except requests.exceptions.ConnectionError:
-            sys.exit("ERROR:Cannot connect to services. Make sure they are running in a separate process.")
+            sys.exit("ERROR: Cannot connect to services. Make sure they are running in a separate process.")
         except AssertionError:
-            sys.exit(f'Sorry pal, you have {len(failures)} failures')
+            exit_with_failures(len(failures))
 
     elif what_to_do.lower() == QUIT:
         quit()
@@ -75,13 +83,12 @@ Running interactive mode.
 
 
 def wait_until_up(services):
-    time.sleep(3)
-    # up = [False]
-    # while not all(up):
-    #     try:
-    #         up = [requests.get(f'http://localhost:{s.exposed_port}/').status_code == 200 for s in services.values()]
-    #     except requests.exceptions.ConnectionError:
-    #         up = [False]
+    up = [False]
+    while not all(up):
+        try:
+            up = [requests.get(f'http://localhost:{s.exposed_port}/').status_code == 200 for s in services.values()]
+        except requests.exceptions.ConnectionError:
+            up = [False]
 
 
 parser = argparse.ArgumentParser(usage='unettest [-hrst] [--nginx-conf NGINX_CONF] file',
@@ -98,11 +105,11 @@ args = parser.parse_args()
 config, tests, services = None, None, None
 
 try:
-    config = config_tools.parse_input_config(args.config)
-    tests = config_tools.parse_tests(config['tests'])
-    services = config_tools.parse_services(config['services'])
+    config = config_reader.parse_input_config(args.config)
+    tests = config_reader.parse_tests(config['tests'])
+    services = config_reader.parse_services(config['services'])
 except Exception as e:
-    print("Error parsing config yaml:", e)
+    print("There was an error parsing your config:", e)
     sys.exit(1)
 
 what_to_do = None
