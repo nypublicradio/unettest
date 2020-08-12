@@ -1,0 +1,3 @@
+`web_services` are raw services on the network; no nginx
+
+`nginx_services` are nginx servers; may also contain a uwsgi service

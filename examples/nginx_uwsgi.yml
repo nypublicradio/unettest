@@ -1,0 +1,43 @@
+services:
+  - bookstore:
+      routes:
+        - name: non_fiction
+          route: '/books/non-fiction'
+          method: 'GET'
+          status: 200
+          # params:
+          #   - author
+
+nginx:
+  services:
+    - videostore:
+        type: ['uwsgi']
+        routes:
+          - name: westerns
+            route: '/videos/westerns'
+            method: 'GET'
+            status: 200
+            # params:
+            #   - director
+
+tests:
+  - test_non_fiction:
+      send: 'GET'
+      target: '/authors/davis'
+      expect:
+        - bookstore.non_fiction:
+            called_times: 1
+            method: 'GET'
+            return_status: 200
+            # called_with:
+              # params:
+              #   author: davis
+  - test_western_uwsgi_pass:
+     send: 'GET'
+     target: '/videos/westerns'
+     expect:
+       - videostore.westerns:
+           called_times: 1
+           method: 'GET'
+           return_status: 200
+           # called_via: 'uwsgi'

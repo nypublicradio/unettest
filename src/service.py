@@ -1,4 +1,8 @@
+import json
+import os
 import re
+import requests
+import socket
 
 class Service:
     """
@@ -22,6 +26,7 @@ class Service:
 
     def __init__(self, name):
         self.name = name
+        self.type_ = []
         self.routes = []
         self.exposed_port = 0
 
@@ -38,6 +43,39 @@ class Service:
         if matching_routes:
             return matching_routes.pop()
         return None
+
+    def last_call(self):
+        # if 'uwsgi' in self.type_:
+        #     status_code, report = self.ask_socket_for_status()
+        #     return status_code, report
+        # else:
+        #     last_req = requests.get(f'http://localhost:{self.exposed_port}/last_call')
+        #     return last_req.status_code, json.loads(last_req.text)
+        last_req = requests.get(f'http://localhost:{self.exposed_port}/last_call')
+        return last_req.status_code, json.loads(last_req.text)
+
+    def ask_socket_for_status(self):
+        """
+        low-level connection to the socket
+
+        not in use rn, but leaving it around in case i need it
+        it in the future (sorry konmari)
+        """
+        resp = None
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect(('localhost', self.exposed_port))
+            s.send(b'GET /last_call HTTP/1.1\r\nHost: localhost\r\n\r\n')
+            raw_resp = s.recv(4096)
+            resp = raw_resp.decode('utf-8')
+        resp_elems = resp.split('\r\n')
+        status = re.search('\d{3}', resp_elems[0]).group(0)
+        try:
+            report = json.loads(resp_elems[-1])
+        except JSONDecodeError as e:
+            return int(status), None
+        return int(status), report
+
+
 
 
     def add_home_route(self):
@@ -128,3 +166,28 @@ RUN pip install -r requirements.txt
 COPY . .
 CMD ["flask", "run", "-p", "{exposed_port}"]
 """)
+
+    def insert_uwsgi(self, service_dir):
+        ini = os.path.join(service_dir, 'main.ini')
+        wsgi = os.path.join(service_dir, 'wsgi.py')
+        with open(ini, 'w') as f:
+            f.write(f"""[uwsgi]
+module = wsgi:app
+
+wsgi-file = /code/wsgi.py
+
+master = true
+processes = 1
+threads = 1
+callable = app
+
+socket = /tmp/{self.name}.sock
+chmod-socket = 666
+vacuum = true
+die-on-term = true """)
+
+        with open(wsgi, 'w') as f:
+            f.write("""from main import app
+
+if __name__ == "__main__":
+    app.run() """)

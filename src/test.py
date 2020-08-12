@@ -51,14 +51,13 @@ def run_test(test, services):
             successes.append(False)
             break
 
-        last_req = requests.get(f'http://localhost:{sys_under_test.exposed_port}/last_call')
+        status, test_report = sys_under_test.last_call()
 
-        if last_req.status_code == 404:
+        if status == 404:
             print(f'  request {test.req_method} {test.uri} was never called')
             successes.append(False)
             break
 
-        report_from_service = json.loads(last_req.text)
         # target = test.uri
         # if test.uri_vars:
         #     for varname, varvalue in test.uri_vars.items():
@@ -69,7 +68,7 @@ def run_test(test, services):
         #         # we take out `gnarly` and replace it with the <awesome> placeholder again.
         #         target = target.replace(varvalue, f'<{varname}>')
 
-        target_called = report_from_service['route'] == sys_route.route_
+        target_called = test_report['route'] == sys_route.route_
         print(f'  asserting target route {sys_route.route_} was called . . . ', end='')
         if target_called:
             print('\tYes')
@@ -79,7 +78,7 @@ def run_test(test, services):
             successes.append(False)
 
         print(f'            that endpoint returned {expect.return_status} . . . ', end='')
-        if report_from_service['status_code'] == expect.return_status:
+        if test_report['status_code'] == expect.return_status:
             print('\tYes')
             successes.append(True)
         else:
@@ -87,7 +86,7 @@ def run_test(test, services):
             successes.append(False)
 
         print(f'            it was invoked with {expect.method} . . . ', end='')
-        if report_from_service['method'] == expect.method:
+        if test_report['method'] == expect.method:
             print('\tYes')
             successes.append(True)
         else:
