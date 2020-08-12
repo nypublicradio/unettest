@@ -94,7 +94,7 @@ def wait_until_up(services):
 
 
 parser = argparse.ArgumentParser(usage='unettest [-hrst] [--nginx-conf NGINX_CONF] file',
-            description='if u got a network, u net test - - - NYPR - - - v0.1.0',
+            description='if u got a network, u net test - - - NYPR - - - v0.2.0',
             epilog='help, tutorials, documentation: available ~~ http://unettest.net',
             formatter_class=lambda prog: argparse.HelpFormatter(prog, max_help_position=35))
 parser.add_argument('config', help='unettest yaml config', type=str)
