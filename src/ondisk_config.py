@@ -2,9 +2,11 @@ import yaml
 import os
 import subprocess
 
+from src.service import Service
+
 from src.unettest_exceptions import ParseException
 
-WORK_DIR = './unettest_apps'
+WORK_DIR = './.unettest_apps'
 NGINX_DEFAULT_DIR = './nginx/'
 
 
