@@ -130,9 +130,17 @@ def __configure_nginx(nginx_spec, input_nginxconf=''):
 RUN apt-get install python3 python3-pip python3-dev -y
 WORKDIR /code
 COPY . .
-RUN apt-get install gcc musl-dev -y
+RUN apt-get install git -y
 COPY requirements.txt requirements.txt
+ENV runenv test
+ENV ENV test
+RUN git clone https://github.com/nginx/nginx.git && cp ./nginx/conf/* /etc/nginx
+RUN echo 'proxy_set_header Host $http_host;' >> /etc/nginx/proxy_params
+RUN echo 'proxy_set_header X-Real-IP $remote_addr; ' >> /etc/nginx/proxy_params
+RUN echo 'proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; ' >> /etc/nginx/proxy_params
+RUN echo 'proxy_set_header X-Forwarded-Proto $scheme; ' >> /etc/nginx/proxy_params
+RUN mkdir -p /var/log/nginx/
+RUN mkdir -p /run/uwsgi
 RUN pip3 install -r requirements.txt
 RUN pip3 install uwsgi flask
-RUN openresty
 CMD ["uwsgi", "main.ini"] """)
