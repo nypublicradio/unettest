@@ -81,13 +81,15 @@ def parse_nginx(spec):
     Can contain SERVICEs, probably a uwsgi service running on the
     same server as the nginx file under test.
     """
-    nginx_services = {}
+    nginx_spec = {}
     if 'services' in spec:
-        nginx_services['services'] = {}
+        nginx_spec['services'] = {}
         for name, config in spec['services']:
             # TODO need to give sock name to support multiple uwsgi services
-            nginx_services['services'][name] = _parse_service(name, config, 4999)
-    return nginx_services
+            nginx_spec['services'][name] = _parse_service(name, config, 4999)
+    if 'custom_mount' in spec:
+        nginx_spec['custom_mount'] = spec['custom_mount']
+    return nginx_spec
 
 
 def parse_tests(spec):
