@@ -64,6 +64,7 @@ def parse_services(spec):
 def _parse_service(name, config, exposed_port):
     service = Service(name)
     service.type_ = config.get('type', [])
+    service.sockpath = config.get('sockpath', None)
     service.exposed_port = exposed_port
     service.add_home_route()
     for route_ in config['routes']:
