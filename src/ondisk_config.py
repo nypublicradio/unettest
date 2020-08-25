@@ -26,11 +26,14 @@ def mk_architecture(services, nginx_spec, nginx_conf_dir):
     print(f'LOADING NGINX CONFS located at {nginx_conf_dir}')
 
     for service_name, service in services.items():
-        __add_service(service_name, service)
+        __add_service(service_name, service.routes, service.exposed_port, Service.generate_service)
+
+    __add_service('ledger', [], 4888, Service.generate_ledger)
 
     __configure_nginx(nginx_spec, nginx_conf_dir)
 
-    __add_dockercompose(services)
+    custom_mounts = nginx_spec.get('custom_mount', [])
+    __add_dockercompose(services, custom_mounts)
 
 
 def reload_nginx_config():
@@ -61,20 +64,19 @@ def __mk_workspace():
         os.mkdir(WORK_DIR)
 
 
-def __add_service(service_name, service):
+def __add_service(name, routes, exposed_port, constructor):
     """
     Configure local directory to later build into SERVICE docker image.
 
     MAKES DIR service
     """
-    if not os.path.exists(f'{WORK_DIR}/{service_name}'):
-        os.mkdir(f'{WORK_DIR}/{service_name}')
-    service.generate_service(f'{WORK_DIR}/{service_name}/main.py')
-    service.insert_dockerfile(f'{WORK_DIR}/{service_name}/Dockerfile', service.exposed_port)
-    service.insert_requirements(f'{WORK_DIR}/{service_name}/requirements.txt')
+    if not os.path.exists(f'{WORK_DIR}/{name}'):
+        os.mkdir(f'{WORK_DIR}/{name}')
+    constructor(name, f'{WORK_DIR}/{name}/main.py', routes)
+    Service.insert_dockerfile(f'{WORK_DIR}/{name}/Dockerfile', exposed_port)
+    Service.insert_requirements(f'{WORK_DIR}/{name}/requirements.txt')
 
-
-def __add_dockercompose(services):
+def __add_dockercompose(services, custom_mounts):
     """
     Accept list of Services and write to disk a docker-compose file.
     """
@@ -88,6 +90,10 @@ def __add_dockercompose(services):
             f.write(f'      - "{service.exposed_port}:{service.exposed_port}"\n')
             f.write(f'    expose:\n')
             f.write(f'      - {service.exposed_port}\n')
+        f.write(f'  ledger:\n')
+        f.write(f'    build: {WORK_DIR}/ledger\n')
+        f.write(f'    ports:\n')
+        f.write(f'      - "4888:4888"\n')
         f.write(f'  nginx_server:\n')
         f.write(f'    build: {WORK_DIR}/nginx_server\n')
         f.write(f'    ports:\n')
@@ -100,6 +106,9 @@ def __add_dockercompose(services):
         # f.write(f'      - {WORK_DIR}/nginx_server/conf:/etc/nginx/conf.d\n')
         # f.write(f'      - ./scripts:/usr/local/openresty/scripts\n')
         f.write(f'      - {WORK_DIR}/nginx_server/conf:/usr/local/openresty/nginx/conf\n')
+
+        for mount in custom_mounts:
+            f.write(f'      - {mount}\n')
 
 
 def __configure_nginx(nginx_spec, input_nginxconf=''):
@@ -121,8 +130,8 @@ def __configure_nginx(nginx_spec, input_nginxconf=''):
 
     if nginx_spec and 'services' in nginx_spec:
         for service_name, service in nginx_spec['services'].items():
-            service.generate_service(f'{WORK_DIR}/nginx_server/main.py')
-            service.insert_requirements(f'{WORK_DIR}/nginx_server/requirements.txt')
+            Service.generate_service(service_name, f'{WORK_DIR}/nginx_server/main.py', service.routes)
+            Service.insert_requirements(f'{WORK_DIR}/nginx_server/requirements.txt')
             service.insert_uwsgi(f'{WORK_DIR}/nginx_server/')
 
         with open(f'{WORK_DIR}/nginx_server/Dockerfile', 'a') as f:
