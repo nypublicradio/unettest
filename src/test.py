@@ -2,8 +2,9 @@ import json
 import requests
 
 from collections import namedtuple
+from src.service import last_call
 
-from src.unettest_exceptions import MockServiceConnectionException
+from src.unettest_exceptions import MockServiceConnectionException, MockServiceNotFound, NginxConfigurationException
 
 def run_tests(tests, services):
     test_reports = []
@@ -25,11 +26,11 @@ def analyze_test_results(test_reports):
     return failures
 
 
-def send_to_nginx(path, request_type):
+def send_to_nginx(path, request_type, headers):
     if request_type == 'GET':
-        return requests.get(f'http://localhost:4999{path}')
+        return requests.get(f'http://localhost:4999{path}', headers=headers)
     elif request_type == 'POST':
-        return requests.post(f'http://localhost:4999{path}')
+        return requests.post(f'http://localhost:4999{path}', headers=headers)
 
 
 def run_test(test, services):
@@ -39,24 +40,35 @@ def run_test(test, services):
     successes = []
 
     try:
-        send_to_nginx(test.uri, test.req_method)
-    except Exception:
-        raise MockServiceConnectionException("Can't connect to service under test. Perhaps an nginx misconfiguration? Is Host header correct?")
+        send_to_nginx(test.uri, test.req_method, test.headers)
+    except requests.exceptions.ConnectionError:
+        raise MockServiceConnectionException("can't connect to service under test. perhaps an nginx misconfiguration? Is Host header correct?")
+    except requests.exceptions.TooManyRedirects:
+        raise NginxConfigurationException("nginx config: too many redirects")
+
+    test_reports = []
+    report = last_call(test.headers)
+    while report:
+        test_reports.append(report)
+        report = last_call(test.headers)
+
 
     for expect in test.expects:
         sys_under_test = services.get(expect.service)
+        if sys_under_test is None:
+            servs = [s for s in services.keys()]
+            raise MockServiceNotFound(f'service {expect.service} not found in {servs}')
         sys_route = sys_under_test.get_route(expect.route_)
         if not sys_route:
             print(f"  no route found '{expect.route_}' in {sys_under_test}")
             successes.append(False)
             break
 
-        status, test_report = sys_under_test.last_call()
-
-        if status == 404:
-            print(f'  request {test.req_method} {test.uri} was never called')
-            successes.append(False)
-            break
+        test_report = None
+        for report in test_reports:
+            if report['service'] == expect.service and report['test'] == expect.route_:
+                test_report = report
+                break
 
         # target = test.uri
         # if test.uri_vars:
@@ -69,9 +81,9 @@ def run_test(test, services):
         #         target = target.replace(varvalue, f'<{varname}>')
 
         target_called = test_report['route'] == sys_route.route_
-        print(f'  asserting target route {sys_route.route_} was called . . . ', end='')
+        print(f'  asserting target route {sys_route.name} {sys_route.route_} was called . . . ', end='')
         if target_called:
-            print('\tYes')
+            print('Yes')
             successes.append(True)
         else:
             print('\tNo')
@@ -92,6 +104,8 @@ def run_test(test, services):
         else:
             print('\tNo')
             successes.append(False)
+
+        print()
 
     # print(f'            included query params {expect.params} . . . ', end='')
     # TODO query params to come
