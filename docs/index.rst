@@ -51,6 +51,8 @@ Requirements:
 * docker-compose
 * `unettest for MacOS <https://unettest.s3.us-east-2.amazonaws.com/unettest.mac>`_
   (`SHA-256 checksum <https://unettest.s3.us-east-2.amazonaws.com/unettest.mac-sha256>`_)
+* `unettest for Linux <https://unettest.s3.us-east-2.amazonaws.com/unettest.nix>`_
+  (`SHA-256 checksum <https://unettest.s3.us-east-2.amazonaws.com/unettest.nix-sha256>`_)
 
 
 

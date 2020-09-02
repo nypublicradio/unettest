@@ -19,6 +19,8 @@ You must first acquire ``unettest``. You can get a copy here:
 
 * `MacOS <https://nginxray.s3.us-east-2.amazonaws.com/nginxray.mac>`_
   (`SHA-256 checksum <https://nginxray.s3.us-east-2.amazonaws.com/mac-sha256>`_)
+* `Linux <https://nginxray.s3.us-east-2.amazonaws.com/nginxray.nix>`_
+  (`SHA-256 checksum <https://nginxray.s3.us-east-2.amazonaws.com/nix-sha256>`_)
 
 Add it to your path (``/usr/local/bin/`` is an option). You can use it as it or give it a
 snappy alias.
