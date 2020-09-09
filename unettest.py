@@ -118,7 +118,7 @@ parser.add_argument('-t', '--test-only', help='run tests async', action='store_t
 parser.add_argument('--nginx-conf', help='dir with nginx confs (default: ./nginx/)')
 args = parser.parse_args()
 
-tests, services, nginx_spec = None, None, None
+tests, services, nginx_spec = None, None, {}
 
 try:
     config = config_reader.read_input_config(args.config)

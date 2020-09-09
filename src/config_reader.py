@@ -89,6 +89,7 @@ def parse_nginx(spec):
             nginx_spec['services'][name] = _parse_service(name, config, 4999)
     if 'custom_mount' in spec:
         nginx_spec['custom_mount'] = spec['custom_mount']
+    nginx_spec['use_default'] = spec.get('use_default', False)
     return nginx_spec
 
 
