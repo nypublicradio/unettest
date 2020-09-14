@@ -17,13 +17,23 @@
 function build_and_deploy_binary {
 	echo '#### FRESH BUILD ####'
 
-	pyinstaller unettest.py -p ~/.virtualenvs/unettest/lib/python3.7/site-packages --onefile --name unettest.mac
+	mySys="$(uname -s)"
 
-	sha_val=$( shasum -a 256 dist/unettest.mac )
-	echo $sha_val > unettest.mac-sha256
+	case "${mySys}" in
+	Darwin)
+		BUILDTARGET="mac"
+		;;
+	Linux)
+		BUILDTARGET="nix"
+		;;
+	esac
+	pyinstaller unettest.py -p ~/.venvs/unettest/lib/python3.7/site-packages --onefile --name unettest.$BUILDTARGET
 
-	aws s3 cp ./dist/unettest.mac s3://unettest/ --acl public-read
-	aws s3 cp ./unettest.mac-sha256 s3://unettest/ --acl public-read
+	sha_val=$( shasum -a 256 dist/unettest.$BUILDTARGET )
+	echo $sha_val > unettest.$BUILDTARGET-sha256
+
+	aws s3 cp ./dist/unettest.$BUILDTARGET s3://unettest/ --acl public-read
+	aws s3 cp ./unettest.$BUILDTARGET-sha256 s3://unettest/ --acl public-read
 }
 
 function build_and_deploy_docs {
