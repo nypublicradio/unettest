@@ -12,3 +12,4 @@
 - use custom docker-compose file so it doesnt overwrite an existant one
 - lambda lander
 - support multifile/reuse of services
+- figure out proxy_params so those run echo calls in ondisk config arent needed
