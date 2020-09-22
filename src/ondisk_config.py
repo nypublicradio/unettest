@@ -53,7 +53,7 @@ def reload_nginx_config():
     nid = __get_nginx_dockerid()
     while not nid:
         nid = __get_nginx_dockerid()
-    openresty_restart = f'docker exec -it {nid} openresty'
+    openresty_restart = f'docker exec {nid} openresty'
     os.system(openresty_restart)
 
 
