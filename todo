@@ -1,10 +1,14 @@
 - use a default forward nginx config
 ✓ respect $NGINX_CONFIG
-- support single file
-- rm the folder left behind by nxr
+- support single nginx file
+✓ rm the folder left behind by nxr
 ✓ build.sh `docs-only` `app-only`
 ✓ better error/reporting on loaded nginx confs
-- params optional in config
+✓ params optional in config
 ✓ lists of expects
-- 'using nginx at None'
+✓ 'using nginx at None'
 - test/report query params
+- refactor ugly parts
+- use custom docker-compose file so it doesnt overwrite an existant one
+- lambda lander
+- support multifile/reuse of services
