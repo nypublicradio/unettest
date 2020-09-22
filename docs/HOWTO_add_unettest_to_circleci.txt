@@ -1,0 +1,10 @@
+  Here is how to add unettest runner to a circle project
+----------------------------------------------------------
+
+1) grant permission for ec2 to readonly access your git repo.
+  - grab id_rsa.pub from ec2 runner via ssh (jordan has the pem)
+  - add it to github settings > Deploy Keys
+
+2) add ssh unettest.pem for ec2 to circle pipeline
+  - grab the pem key that amazon associated with the test runner (jordan has the pem)
+  - add it to circle settings > SSH Keys
