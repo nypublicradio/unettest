@@ -1,0 +1,25 @@
+services:
+  - bookstore:
+      routes:
+        - name: non_fiction
+          route: '/books/non-fiction'
+          method: 'GET'
+          status: 200
+          params:
+            - author
+
+
+tests:
+  - test_non_fiction:
+      send: 'GET'
+      target: '/authors/davis'
+      expect:
+        - bookstore.non_fiction:
+            called_times: 1
+            method: 'GET'
+            return_status: 200
+            called_with:
+              params:
+                author: davis
+
+

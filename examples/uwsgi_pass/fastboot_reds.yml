@@ -1,0 +1,43 @@
+services:
+  - bookstore_client:
+      routes:
+        - name: sure_to_404
+          route: '/bookstore404'
+          method: 'GET'
+          status: 404
+        - name: redirect_target
+          route: '/success200'
+          method: 'GET'
+          status: 200
+
+nginx:
+  services:
+    - bookmanager:
+        type: ['uwsgi']
+        sockpath: "/run/uwsgi/bookstore_client.sock"
+        routes:
+          - name: has_redirect_for_bookstore
+            route: '/bookstore404/'
+            method: 'GET'
+            status: 301
+            redirect_30x_target: 'http://localhost:5000/bookstore200'
+
+tests:
+  - test_bookstore_redirect:
+      send: 'GET'
+      headers:
+        Host: 'wnycstudios.demo.nypr.digital'
+      target: '/bookstore404'
+      expect:
+        - bookstore_client.sure_to_404:
+            called_times: 1
+            method: 'GET'
+            return_status: 404
+        - bookmanager.has_redirect_for_bookstore:
+            called_times: 1
+            method: 'GET'
+            return_status: 301
+        - bookstore_client.redirect_target:
+            called_times: 1
+            method: 'GET'
+            return_status: 200

@@ -40,6 +40,7 @@ class TestCase:
         self.name = name
         self.req_method = test_configuration['send']
         self.uri = test_configuration['target']
+        self.headers = test_configuration.get('headers', [])
         self.uri_vars = test_configuration.get('vars', None)
         self.expects = self.parse_expects(test_configuration['expect'])
 
